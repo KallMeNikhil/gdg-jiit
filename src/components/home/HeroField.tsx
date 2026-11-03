@@ -274,17 +274,31 @@ export function HeroField({ className = "" }: { className?: string }) {
     const ro = new ResizeObserver(resize);
     ro.observe(host);
 
-    const target = new THREE.Vector2(10, 10);
+    const coarse = !window.matchMedia("(pointer: fine)").matches;
+    const target = new THREE.Vector2(coarse ? 0.6 : 10, coarse ? 0.2 : 10);
     let force = 0;
-    const onMove = (e: PointerEvent) => {
+    let touchedAt = -Infinity;
+    const aim = (x: number, y: number) => {
       const r = host.getBoundingClientRect();
-      target.set(((e.clientX - r.left) / r.width) * 2 - 1, -(((e.clientY - r.top) / r.height) * 2 - 1));
+      target.set(((x - r.left) / r.width) * 2 - 1, -(((y - r.top) / r.height) * 2 - 1));
       force = 1;
+    };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      aim(e.clientX, e.clientY);
+    };
+    const onTouch = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (!t) return;
+      touchedAt = performance.now();
+      aim(t.clientX, t.clientY);
     };
     const onLeave = () => {
       force = 0;
     };
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("touchstart", onTouch, { passive: true });
+    window.addEventListener("touchmove", onTouch, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
 
     let visible = true;
@@ -312,7 +326,11 @@ export function HeroField({ className = "" }: { className?: string }) {
       }
       elapsed += dt;
       uniforms.uTime.value = elapsed;
-      uniforms.uPointer.value.lerp(target, 0.08);
+      if (coarse && now - touchedAt > 1600) {
+        target.set(Math.sin(elapsed * 0.31) * 0.75 + Math.sin(elapsed * 0.83) * 0.12, Math.sin(elapsed * 0.47 + 1.2) * 0.45);
+        force = 0.8;
+      }
+      uniforms.uPointer.value.lerp(target, coarse ? 0.05 : 0.08);
       uniforms.uPointerForce.value += (force - uniforms.uPointerForce.value) * 0.05;
       const rect = host.getBoundingClientRect();
       uniforms.uScroll.value = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
@@ -337,6 +355,8 @@ export function HeroField({ className = "" }: { className?: string }) {
       ro.disconnect();
       io.disconnect();
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("touchstart", onTouch);
+      window.removeEventListener("touchmove", onTouch);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       renderer.domElement.removeEventListener("webglcontextlost", onLost);
       geometry.dispose();

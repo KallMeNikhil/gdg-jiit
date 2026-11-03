@@ -2,21 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useMotionTemplate, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
-import { CalendarDays, Home, Info, Mail, Rocket, Users } from "lucide-react";
 import { NAV, SITE } from "@/src/data/site";
 import { cn } from "@/src/lib/utils";
 import { CtaButton } from "../ui/CtaButton";
-
-const ICONS: Record<string, typeof Home> = {
-  "/": Home,
-  "/about": Info,
-  "/events": CalendarDays,
-  "/team": Users,
-  "/bitbox": Rocket,
-  "/contact": Mail,
-};
+import { MenuToggle, MobileMenu } from "./MobileMenu";
 
 const COLORS = ["#4285f4", "#ea4335", "#fbbc04", "#34a853", "#4285f4", "#ea4335"];
 const MOBILE = [{ label: "Home", href: "/" }, ...NAV];
@@ -27,6 +18,8 @@ export function Nav() {
   const [compact, setCompact] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [hover, setHover] = useState<string | null>(null);
+  const [menu, setMenu] = useState(false);
+  const closeMenu = useCallback(() => setMenu(false), []);
   const barRef = useRef<HTMLElement>(null);
   const mx = useMotionValue(-200);
   const light = useMotionTemplate`radial-gradient(160px circle at ${mx}px 50%, rgba(255,255,255,0.14), transparent 70%)`;
@@ -38,6 +31,11 @@ export function Nav() {
     if (v < 160 || v < prev - 2) setHidden(false);
     else if (v > prev + 4) setHidden(true);
   });
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMenu(false));
+    return () => cancelAnimationFrame(id);
+  }, [pathname]);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
   const items = NAV;
@@ -51,23 +49,24 @@ export function Nav() {
       </a>
 
       <motion.div
-        className="fixed left-4 top-4 z-[100] sm:left-6 sm:top-5"
-        animate={{ scale: compact ? 0.86 : 1 }}
-        style={{ transformOrigin: "0% 0%" }}
-        transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        className="fixed left-1 top-1 z-[110] sm:left-2.5 sm:top-0.5"
+        animate={{ y: hidden && !menu ? -120 : 0, opacity: hidden && !menu ? 0 : 1, scale: compact && !menu ? 0.9 : 1 }}
+        style={{ transformOrigin: "20% 50%" }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
         <Link
           href="/"
           aria-label={`${SITE.name} home`}
-          className="group relative flex h-[84px] w-[84px] items-center justify-center sm:h-[92px] sm:w-[92px]"
+          onClick={closeMenu}
+          className="group relative flex h-[72px] w-[72px] items-center justify-center sm:h-[88px] sm:w-[88px]"
         >
           <span
             aria-hidden="true"
-            className="absolute inset-1 rounded-full opacity-40 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
+            className="absolute inset-x-3 inset-y-5 rounded-full opacity-35 blur-xl transition-opacity duration-500 group-hover:opacity-60"
             style={{ background: "conic-gradient(from 200deg, #4285f4, #ea4335, #fbbc04, #34a853, #4285f4)", animation: "spin 14s linear infinite" }}
           />
-          <span aria-hidden="true" className="absolute -inset-3 rounded-full bg-[radial-gradient(circle,rgba(7,8,11,0.78)_30%,rgba(7,8,11,0.4)_52%,transparent_72%)]" />
-          <img src="/gdg-logo.gif" alt="" className="relative h-full w-full scale-[1.45] object-contain drop-shadow-[0_4px_18px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-[1.55]" />
+          <span aria-hidden="true" className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,rgba(7,8,11,0.7)_35%,rgba(7,8,11,0.3)_65%,transparent)]" />
+          <img src="/gdg-logo.gif" alt="" width={88} height={88} decoding="async" className="relative h-full w-full object-contain drop-shadow-[0_3px_10px_rgba(0,0,0,0.55)] transition-transform duration-500 group-hover:scale-[1.06]" />
         </Link>
       </motion.div>
 
@@ -139,24 +138,16 @@ export function Nav() {
         <CtaButton href="/join" variant="ghost">Join us</CtaButton>
       </motion.div>
 
-      <nav aria-label="Primary" className="glass fixed inset-x-3 bottom-3 z-[100] rounded-3xl px-2 py-2 md:hidden">
-        <ul className="flex items-center justify-between">
-          {MOBILE.map((item, i) => {
-            const Icon = ICONS[item.href];
-            const active = isActive(item.href);
-            const c = COLORS[i % 4];
-            return (
-              <li key={item.href} className="relative flex-1">
-                <Link href={item.href} aria-label={item.label} aria-current={active ? "page" : undefined} className={cn("relative z-10 flex flex-col items-center gap-1 rounded-2xl py-1.5 text-[0.62rem] transition-colors", active ? "text-bone" : "text-ash")}>
-                  <Icon size={19} style={{ color: active ? c : undefined }} />
-                  {item.label}
-                </Link>
-                {active && <motion.span layoutId="nav-current-mobile" transition={spring} className="absolute inset-0 rounded-2xl" style={{ background: `${c}22`, boxShadow: `inset 0 0 0 1px ${c}66` }} />}
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      <motion.div
+        className="fixed right-4 top-3 z-[110] md:hidden"
+        style={{ top: "max(0.75rem, env(safe-area-inset-top))", right: "max(1rem, env(safe-area-inset-right))" }}
+        animate={{ scale: compact && !menu ? 0.92 : 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 24 }}
+      >
+        <MenuToggle open={menu} onToggle={() => setMenu((m) => !m)} />
+      </motion.div>
+
+      <MobileMenu open={menu} onClose={closeMenu} items={MOBILE} isActive={isActive} />
     </>
   );
 }

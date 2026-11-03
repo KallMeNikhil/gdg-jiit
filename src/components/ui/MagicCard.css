@@ -14,8 +14,14 @@
   transition: opacity 0.3s ease;
 }
 
-.magic-card:hover .magic-card-border {
+.magic-card[data-live="true"] .magic-card-border {
   opacity: 1;
+}
+
+@media (hover: hover) {
+  .magic-card:hover .magic-card-border {
+    opacity: 1;
+  }
 }
 
 .magic-card-bg {
@@ -36,8 +42,14 @@
   transition: opacity 0.3s ease;
 }
 
-.magic-card:hover .magic-card-glow {
+.magic-card[data-live="true"] .magic-card-glow {
   opacity: 1;
+}
+
+@media (hover: hover) {
+  .magic-card:hover .magic-card-glow {
+    opacity: 1;
+  }
 }
 
 .magic-card-content {

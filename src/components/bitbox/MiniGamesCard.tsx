@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight, LucideIcon } from "lucide-react";
+import { LiveGroup } from "../ui/LiveGroup";
 
 export interface GameCardProps {
   title: string;
@@ -13,19 +14,19 @@ export interface GameCardProps {
 
 export default function MiniGamesGrid({ games }: { games: GameCardProps[] }) {
   return (
-    <div className="w-full max-w-none px-3 md:px-10 lg:px-16 py-8">
+    <div className="w-full max-w-none px-0 py-6 md:px-10 md:py-8 lg:px-16">
       <div className="grid grid-cols-1 md:grid-cols-1 gap-5 auto-rows-[230px] md:auto-rows-[260px]">
         {games.map((game, index) => (
-          <div
+          <LiveGroup
             key={index}
-            className={`group relative overflow-hidden rounded-[40px] 
+            className={`relative overflow-hidden rounded-[32px] md:rounded-[40px]
             border bg-[rgba(15,15,15,0.4)] backdrop-blur-[25px] saturate-150 
-            transition-all duration-500 hover:scale-[1.02]
+            transition-all duration-500 hover:scale-[1.02] live:scale-[1.02]
             ${game.borderColor || "border-white/10"} 
             ${game.glowStyles || "hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.2)]"}`}
           >
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 group-live:opacity-100
               transition-opacity duration-500 pointer-events-none"
               style={{
                 backgroundImage: `linear-gradient(${game.ambientColor || 'rgba(255,255,255,0.05)'}, transparent)`
@@ -41,13 +42,14 @@ export default function MiniGamesGrid({ games }: { games: GameCardProps[] }) {
                   grayscale transition-all duration-700 ease-in-out 
                   group-hover:opacity-60 group-hover:blur-0 
                   group-hover:scale-110 group-hover:grayscale-0
+                  group-live:opacity-60 group-live:blur-0 group-live:scale-110 group-live:grayscale-0
                   [mask-image:radial-gradient(circle_at_center,black_0%,transparent_80%)]"
                 />
               )}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(10,10,10,0.8)_100%)]" />
             </div>
 
-            <div className="relative z-10 h-full flex flex-col justify-between p-8">
+            <div className="relative z-10 flex h-full flex-col justify-between p-6 md:p-8">
               <div className="flex flex-col gap-3">
                 {game.icon && (
                   <div className="p-3 w-fit rounded-2xl bg-white/5 border border-white/10 shadow-2xl">
@@ -66,14 +68,14 @@ export default function MiniGamesGrid({ games }: { games: GameCardProps[] }) {
               </div>
 
               <div className="flex items-center gap-2 text-xs font-medium text-white/50 
-              group-hover:text-white transition-colors cursor-pointer">
+              group-hover:text-white group-live:text-white transition-colors cursor-pointer">
                 <span>Play Now</span>
-                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1 group-live:translate-x-1" />
               </div>
             </div>
 
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-          </div>
+          </LiveGroup>
         ))}
       </div>
     </div>

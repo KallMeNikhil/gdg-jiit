@@ -77,6 +77,20 @@ export function PixelBoard() {
 
   const lit = maps[word];
 
+  const paintAt = (x: number, y: number) => {
+    const el = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-cell]");
+    if (!el || !ref.current?.contains(el)) return;
+    const i = Number(el.dataset.cell);
+    const now = Date.now();
+    setPaint((p) => {
+      const next = { ...p, [i]: now };
+      for (const n of [i - 1, i + 1, i - COLS, i + COLS]) {
+        if (n >= 0 && n < ROWS * COLS && Math.abs((n % COLS) - (i % COLS)) <= 1 && p[n] === undefined && Math.random() < 0.35) next[n] = now;
+      }
+      return next;
+    });
+  };
+
   return (
     <div
       ref={ref}
@@ -84,12 +98,8 @@ export function PixelBoard() {
       aria-label={`Pixel board spelling ${WORDS.join(", ")}`}
       className="grid touch-none gap-[3px] sm:gap-[5px]"
       style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
-      onPointerMove={(e) => {
-        const el = (e.target as HTMLElement).closest<HTMLElement>("[data-cell]");
-        if (!el) return;
-        const i = Number(el.dataset.cell);
-        setPaint((p) => ({ ...p, [i]: Date.now() }));
-      }}
+      onPointerDown={(e) => paintAt(e.clientX, e.clientY)}
+      onPointerMove={(e) => paintAt(e.clientX, e.clientY)}
     >
       {Array.from({ length: ROWS * COLS }, (_, i) => {
         const r = Math.floor(i / COLS);

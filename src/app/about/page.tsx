@@ -46,9 +46,9 @@ export default function AboutPage() {
           <div className="mt-14 grid gap-5 sm:grid-cols-2">
             {VALUES.map((v, i) => (
               <Reveal key={v.title} delay={(i % 2) * 0.08}>
-                <TiltCard glow={COLOR_HEX[v.color]} className="h-full p-9">
+                <TiltCard glow={COLOR_HEX[v.color]} className="h-full p-7 sm:p-9">
                   <span className="font-mono text-sm" style={{ color: COLOR_HEX[v.color] }}>0{i + 1}</span>
-                  <h3 className="mt-10 text-3xl font-semibold">{v.title}</h3>
+                  <h3 className="mt-6 text-[1.7rem] font-semibold sm:mt-10 sm:text-3xl">{v.title}</h3>
                   <p className="mt-4 max-w-md leading-relaxed text-ash">{v.body}</p>
                 </TiltCard>
               </Reveal>

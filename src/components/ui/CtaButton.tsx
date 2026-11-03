@@ -20,8 +20,8 @@ export function CtaButton({ href, children, icon: Icon, external, type = "button
   const inner = (
     <span
       className={cn(
-        "g-edge edge-2 group relative inline-flex h-12 items-center gap-2.5 rounded-2xl px-6 text-[0.95rem] font-medium backdrop-blur-xl transition-[background-color,transform] duration-300 active:scale-[0.97]",
-        "bg-white/[0.04] text-bone hover:bg-white/[0.08]",
+        "g-edge edge-2 group relative inline-flex h-12 items-center gap-2.5 rounded-2xl px-5 text-[0.9rem] font-medium sm:px-6 sm:text-[0.95rem] backdrop-blur-xl transition-[background-color,transform] duration-300 active:scale-[0.97]",
+        "bg-white/[0.04] text-bone hover:bg-white/[0.08] active:bg-white/[0.1]",
         disabled && "pointer-events-none opacity-60",
         className,
       )}

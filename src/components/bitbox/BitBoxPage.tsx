@@ -13,13 +13,14 @@ import MiniGamesGrid from "./MiniGamesCard";
 import SpeakerGrid, { defaultJudges, defaultSpeakers } from "./SpeakerCard";
 import Sponsors from "./Sponsors";
 import { BeveledBorderButton } from "./BeveledButton";
+import { useMediaQuery } from "@/src/hooks/useMediaQuery";
 import "./bitbox-timeline.css";
 
 
 
 function SectionTitle({ lead, accent }: { lead: string; accent: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12 text-center">
+    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-6 text-center md:mb-12">
       <h2 className="text-4xl font-bold tracking-tighter text-white md:text-6xl">
         {lead} <AuroraText>{accent}</AuroraText>
       </h2>
@@ -32,12 +33,13 @@ export function BitBoxPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const spineRef = useRef<HTMLDivElement>(null);
   const [activeId, setActiveId] = useState(0);
+  const mobile = useMediaQuery("(max-width: 767px)");
   const { scrollYProgress } = useScroll({ target: spineRef, offset: ["start 0.6", "end 0.6"] });
   const scaleY = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   return (
     <section className="relative min-h-screen bg-black">
-      <Particles className="pointer-events-none fixed inset-0 z-[60] h-full w-full" quantity={250} staticity={30} ease={50} color="#ffffff" refresh={false} />
+      <Particles className="pointer-events-none fixed inset-0 z-[60] h-full w-full" quantity={mobile ? 110 : 250} staticity={30} ease={50} color="#ffffff" refresh={mobile} />
       <div ref={containerRef} className="roadmap-page-root relative z-10 pt-20">
         <RoadmapOverlay activeRange={activeId >= 0 && activeId <= 9} />
 
@@ -75,30 +77,30 @@ export function BitBoxPage() {
           ))}
         </div>
 
-        <div className="mb-[100px] mt-[200px] flex w-[80%] flex-col items-center justify-center">
+        <div className="mb-[60px] mt-[100px] flex w-full flex-col items-center justify-center px-5 md:mb-[100px] md:mt-[200px] md:w-[80%] md:px-0">
           <SectionTitle lead="Exciting" accent="Prizes" />
           <div className="w-full md:w-[80%] lg:w-[70%]">
             <BentoComponent />
           </div>
         </div>
 
-        <div className="my-[100px] flex w-[80%] flex-col items-center justify-center">
+        <div className="my-[60px] flex w-full flex-col items-center justify-center px-5 md:my-[100px] md:w-[80%] md:px-0">
           <SectionTitle lead="Mini" accent="Games" />
           <div className="w-full md:w-[80%] lg:w-[70%]">
             <MiniGamesGrid games={mockGames} />
           </div>
         </div>
 
-        <div className="mb-[100px] mt-[200px] flex w-[95%] max-w-[1400px] flex-col items-center justify-center md:w-[90%] xl:w-[80%]">
+        <div className="mb-[60px] mt-[100px] flex w-full max-w-[1400px] flex-col items-center justify-center px-5 md:mb-[100px] md:mt-[200px] md:w-[90%] md:px-0 xl:w-[80%]">
           <SectionTitle lead="Our" accent="Speakers" />
-          <div className="w-full px-4 md:px-0">
+          <div className="w-full">
             <SpeakerGrid speakers={defaultSpeakers} />
           </div>
         </div>
 
-        <div className="my-[100px] flex w-[95%] max-w-[1400px] flex-col items-center justify-center md:w-[90%] xl:w-[80%]">
+        <div className="my-[60px] flex w-full max-w-[1400px] flex-col items-center justify-center px-5 md:my-[100px] md:w-[90%] md:px-0 xl:w-[80%]">
           <SectionTitle lead="Our" accent="Judges" />
-          <div className="w-full px-4 md:px-0">
+          <div className="w-full">
             <SpeakerGrid speakers={defaultJudges} />
           </div>
         </div>

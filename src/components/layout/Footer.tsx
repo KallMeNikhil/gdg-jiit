@@ -19,7 +19,7 @@ const SOCIALS = [
 
 export function Footer() {
   return (
-    <footer className="relative mt-24 pb-28 md:pb-0">
+    <footer className="relative mt-24 overflow-x-clip">
       <div className="shell relative">
         <Reveal className="relative">
           <div aria-hidden="true" className="pointer-events-none absolute -left-10 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-g-blue/30 blur-[110px]" />
@@ -40,19 +40,22 @@ export function Footer() {
 
         <div className="glass mt-10 rounded-[2rem] p-4 sm:p-6">
           <PixelBoard />
-          <p className="mt-4 text-center font-mono text-[0.7rem] uppercase tracking-[0.25em] text-mist">Hover to paint the board</p>
+          <p className="mt-4 text-center font-mono text-[0.7rem] uppercase tracking-[0.25em] text-mist">
+            <span className="[@media(pointer:fine)]:hidden">Drag to paint the board</span>
+            <span className="hidden [@media(pointer:fine)]:inline">Hover to paint the board</span>
+          </p>
         </div>
 
         <div className="glass mt-10 rounded-[2rem] p-7 sm:p-10">
           <div className="flex flex-col items-center gap-5 text-center">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
               <span className="g-dots" aria-hidden="true">
                 <i />
                 <i />
                 <i />
                 <i />
               </span>
-              <span className="font-display text-2xl font-semibold tracking-tight">{SITE.longName}</span>
+              <span className="text-balance font-display text-[1.35rem] font-semibold leading-tight tracking-tight sm:text-2xl">{SITE.longName}</span>
             </div>
             <p className="max-w-2xl text-sm leading-relaxed text-ash">
               Google Developer Groups on Campus at Jaypee Institute of Information Technology, Sector 128, Noida — a community of student developers learning and building with Google technologies.
@@ -61,7 +64,7 @@ export function Footer() {
 
           <nav aria-label="Footer" className="mt-9 flex flex-wrap justify-center gap-x-2 gap-y-2 border-y border-white/[0.08] py-5">
             {[{ label: "Home", href: "/" }, ...NAV, { label: "Join", href: "/join" }].map((item) => (
-              <Link key={item.href} href={item.href} className="rounded-xl px-4 py-2 text-sm text-ash transition-colors hover:bg-white/[0.06] hover:text-bone">
+              <Link key={item.href} href={item.href} className="rounded-xl px-3.5 py-2 text-sm text-ash transition-colors hover:bg-white/[0.06] hover:text-bone active:bg-white/[0.06] active:text-bone sm:px-4">
                 {item.label}
               </Link>
             ))}
@@ -75,17 +78,17 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={label}
-                  className="group flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-ash transition-colors duration-300 hover:border-white/25 hover:text-bone"
+                  className="group flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-ash transition-colors duration-300 hover:border-white/25 hover:text-bone active:border-white/25"
                   style={{ ["--c" as string]: color }}
                 >
-                  <Icon size={17} className="transition-[color,transform] duration-300 group-hover:scale-110 group-hover:text-[var(--c)]" />
+                  <Icon size={17} className="text-[var(--c)] transition-[color,transform] duration-300 group-hover:scale-110 group-active:scale-110 [@media(pointer:fine)]:text-current [@media(pointer:fine)]:group-hover:text-[var(--c)]" />
                 </a>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-2 py-8 text-xs text-mist sm:flex-row">
+        <div className="safe-b flex flex-col items-center justify-between gap-2 pt-8 text-center text-xs text-mist sm:flex-row sm:pb-8">
           <p>&copy; {new Date().getFullYear()} Google Developer Groups JIIT. All rights reserved.</p>
           <p className="font-mono">{SITE.motto}</p>
         </div>

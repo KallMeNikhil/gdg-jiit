@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant live (&[data-live="true"]);
+@custom-variant group-live (&:is(:where(.group)[data-live="true"] *));
+
 @theme {
   --color-ink: #07080b;
   --color-ink-soft: #0d0f14;
@@ -157,6 +160,7 @@
 
   body {
     min-height: 100dvh;
+    -webkit-tap-highlight-color: transparent;
     color: var(--color-bone);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -312,14 +316,26 @@
     transition: opacity 0.4s ease;
   }
 
-  .g-edge:hover::before,
-  .g-edge:focus-visible::before {
+  .g-edge:focus-visible::before,
+  .g-edge[data-live="true"]::before,
+  .g-edge:active::before {
     opacity: 1;
   }
 
-  .g-edge:hover::after,
-  .g-edge:focus-visible::after {
+  .g-edge:focus-visible::after,
+  .g-edge[data-live="true"]::after,
+  .g-edge:active::after {
     opacity: 0.35;
+  }
+
+  @media (hover: hover) {
+    .g-edge:hover::before {
+      opacity: 1;
+    }
+
+    .g-edge:hover::after {
+      opacity: 0.35;
+    }
   }
 
   .g-edge.edge-2::before {
@@ -380,8 +396,14 @@
     transform: translateX(-120%) skewX(-20deg);
   }
 
-  .group:hover .sheen::before {
+  .group[data-live="true"] .sheen::before {
     animation: sheen 0.9s var(--ease-out-expo);
+  }
+
+  @media (hover: hover) {
+    .group:hover .sheen::before {
+      animation: sheen 0.9s var(--ease-out-expo);
+    }
   }
 
 
@@ -406,6 +428,10 @@
     position: absolute;
     inset: 0;
     background: radial-gradient(140% 110% at 50% 40%, transparent 55%, rgba(4, 5, 7, 0.6) 100%);
+  }
+
+  .safe-b {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
 
   .no-scrollbar {

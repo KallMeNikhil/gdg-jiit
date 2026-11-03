@@ -17,7 +17,7 @@ export function PageHero({ kicker, title, lead, aside }: Props) {
   const play = useIntroDone();
 
   return (
-    <section className="noise relative overflow-hidden pb-14 pt-40 text-center sm:pb-20 sm:pt-48">
+    <section className="noise relative overflow-hidden pb-12 pt-32 text-center sm:pb-20 sm:pt-48">
       <div className="shell relative flex flex-col items-center">
         <motion.p initial={{ opacity: 0, y: 10 }} animate={play ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 0.6, ease }} className="flex items-center gap-3">
           <span className="g-dots">

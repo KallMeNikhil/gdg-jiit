@@ -25,10 +25,19 @@ function MousePosition(): MousePosition {
       setMousePosition({ x: event.clientX, y: event.clientY })
     }
 
+    const handleTouch = (event: TouchEvent) => {
+      const t = event.touches[0]
+      if (t) setMousePosition({ x: t.clientX, y: t.clientY })
+    }
+
     window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("touchstart", handleTouch, { passive: true })
+    window.addEventListener("touchmove", handleTouch, { passive: true })
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("touchstart", handleTouch)
+      window.removeEventListener("touchmove", handleTouch)
     }
   }, [])
 

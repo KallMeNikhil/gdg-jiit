@@ -5,6 +5,7 @@ import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { BookOpen, BrainCircuit, Images, Presentation, Trophy, Users, type LucideIcon } from "lucide-react";
 import { COLOR_HEX, PROGRAMS, type Program } from "@/src/data/site";
 import { useDesktop } from "@/src/hooks/useMediaQuery";
+import { useLive } from "@/src/hooks/useLive";
 import { SectionHeading } from "../motion/SectionHeading";
 import { Emblem } from "../ui/Emblem";
 import { Lightbox, type LightboxItem } from "../ui/Lightbox";
@@ -19,8 +20,10 @@ const ICONS: Record<string, LucideIcon> = {
 
 function ProgramCard({ program, index, onOpen }: { program: Program; index: number; onOpen: (p: Program) => void }) {
   const hex = COLOR_HEX[program.color];
+  const ref = useRef<HTMLButtonElement>(null);
+  const { live } = useLive(ref, "-20% -30% -20% -30%");
   return (
-    <button type="button" onClick={() => onOpen(program)} className="glass group relative flex h-full w-full flex-col overflow-hidden rounded-[2rem] text-left transition-transform duration-500 hover:-translate-y-1">
+    <button ref={ref} type="button" data-live={live} onClick={() => onOpen(program)} className="glass group relative flex h-full w-full flex-col overflow-hidden rounded-[2rem] text-left transition-transform duration-500 hover:-translate-y-1 active:scale-[0.98]">
       <div className="relative">
         <Emblem icon={ICONS[program.slug] ?? Presentation} color={hex} seed={index} className="aspect-[16/11]" />
         <span className="absolute left-6 top-6 font-mono text-[0.7rem] uppercase tracking-[0.25em]" style={{ color: hex }}>
@@ -28,10 +31,10 @@ function ProgramCard({ program, index, onOpen }: { program: Program; index: numb
         </span>
         <span className="absolute right-6 top-4 font-display text-5xl font-semibold text-white/10">0{index + 1}</span>
       </div>
-      <div className="flex flex-1 flex-col p-7">
-        <h3 className="text-3xl font-semibold">{program.title}</h3>
+      <div className="flex flex-1 flex-col p-6 sm:p-7">
+        <h3 className="text-[1.75rem] font-semibold sm:text-3xl">{program.title}</h3>
         <p className="mt-3 text-sm leading-relaxed text-ash">{program.body}</p>
-        <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-bone/70 transition-colors group-hover:text-bone">
+        <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-bone/70 transition-colors group-hover:text-bone group-live:text-bone">
           <Images size={15} style={{ color: hex }} /> See it in action
         </span>
       </div>
@@ -72,6 +75,29 @@ function PinnedTrack({ onOpen }: { onOpen: (p: Program) => void }) {
   );
 }
 
+function SwipeTrack({ onOpen }: { onOpen: (p: Program) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollXProgress } = useScroll({ container: ref });
+  const fill = useSpring(scrollXProgress, { stiffness: 160, damping: 28 });
+
+  return (
+    <>
+      <div ref={ref} className="no-scrollbar relative mt-10 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-6 pt-2 sm:mt-12 sm:scroll-px-8 sm:px-8">
+        {PROGRAMS.map((p, i) => (
+          <div key={p.slug} className="w-[82vw] max-w-sm shrink-0 snap-center">
+            <ProgramCard program={p} index={i} onOpen={onOpen} />
+          </div>
+        ))}
+      </div>
+      <div className="shell">
+        <div className="mx-auto h-1 w-full max-w-xs overflow-hidden rounded-full bg-white/10">
+          <motion.div style={{ scaleX: fill, background: "var(--g-gradient)" }} className="h-full origin-left rounded-full" />
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function Programs() {
   const desktop = useDesktop();
   const [open, setOpen] = useState<LightboxItem | null>(null);
@@ -105,13 +131,7 @@ export function Programs() {
       {desktop ? (
         <PinnedTrack onOpen={onOpen} />
       ) : (
-        <div className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-6">
-          {PROGRAMS.map((p, i) => (
-            <div key={p.slug} className="w-[85vw] max-w-sm shrink-0 snap-center">
-              <ProgramCard program={p} index={i} onOpen={onOpen} />
-            </div>
-          ))}
-        </div>
+        <SwipeTrack onOpen={onOpen} />
       )}
       <Lightbox item={open} onClose={close} />
     </section>

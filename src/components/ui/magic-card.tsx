@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
-import { motion, useMotionTemplate, useMotionValue } from "motion/react";
+import React, { useCallback, useEffect, useRef } from "react";
+import { motion, useMotionTemplate, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
+import { useLive } from "@/src/hooks/useLive";
 import "./MagicCard.css";
 
 interface MagicCardProps {
@@ -23,13 +24,25 @@ export function MagicCard({
   gradientFrom = "#9E7AFF",
   gradientTo = "#FE8BBB",
 }: MagicCardProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { fine, live } = useLive(ref);
   const mouseX = useMotionValue(-gradientSize);
   const mouseY = useMotionValue(-gradientSize);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
 
   const reset = useCallback(() => {
     mouseX.set(-gradientSize);
     mouseY.set(-gradientSize);
   }, [gradientSize, mouseX, mouseY]);
+
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    if (fine) return;
+    const el = ref.current;
+    if (!el) return;
+    const { offsetWidth: w, offsetHeight: h } = el;
+    mouseX.set(w * (0.1 + 0.8 * p) + Math.sin(p * Math.PI * 2) * w * 0.08);
+    mouseY.set(h * (1.1 - 1.2 * p));
+  });
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -41,10 +54,11 @@ export function MagicCard({
   );
 
   useEffect(() => {
-    reset();
-  }, [reset]);
+    if (fine) reset();
+  }, [reset, fine]);
 
   useEffect(() => {
+    if (!fine) return;
     const handleGlobalPointerOut = (e: PointerEvent) => {
       if (!e.relatedTarget) reset();
     };
@@ -62,14 +76,17 @@ export function MagicCard({
       window.removeEventListener("blur", reset);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [reset]);
+  }, [reset, fine]);
 
   return (
     <div
+      ref={ref}
+      data-live={live}
       className={`magic-card ${className}`}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={reset}
-      onPointerEnter={reset}
+      onPointerMove={fine ? handlePointerMove : undefined}
+      onPointerDown={fine ? undefined : handlePointerMove}
+      onPointerLeave={fine ? reset : undefined}
+      onPointerEnter={fine ? reset : undefined}
     >
       <motion.div
         className="magic-card-border"
@@ -92,7 +109,7 @@ export function MagicCard({
             radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px,
             ${gradientColor}, transparent 100%)
           `,
-          opacity: gradientOpacity,
+          opacity: fine || live ? gradientOpacity : 0,
         }}
       />
 

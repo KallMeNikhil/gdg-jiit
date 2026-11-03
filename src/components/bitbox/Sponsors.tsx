@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { GlowingEffect } from "@/src/components/ui/glowing-effect";
 import { AuroraText } from "@/src/components/ui/aurora-text";
+import { LiveGroup } from "@/src/components/ui/LiveGroup";
 
 const sponsors = {
   title: [
@@ -38,11 +39,11 @@ const SponsorCard = ({
   ambientColor?: string;
 }) => {
   return (
-    <div
-      className={`group relative block h-full w-full ${className}`}
+    <LiveGroup
+      className={`relative block h-full w-full ${className}`}
     >
       <div
-        className={`relative h-full w-full overflow-hidden rounded-[40px] border bg-[rgba(15,15,15,0.4)] backdrop-blur-[25px] saturate-150 transition-all duration-500 hover:scale-[1.02] ${borderColor} ${glowStyles}`}
+        className={`relative h-full w-full overflow-hidden rounded-[28px] border bg-[rgba(15,15,15,0.4)] backdrop-blur-[25px] saturate-150 transition-all duration-500 hover:scale-[1.02] group-live:scale-[1.02] md:rounded-[40px] ${borderColor} ${glowStyles}`}
       >
         <GlowingEffect
           spread={50}
@@ -54,15 +55,15 @@ const SponsorCard = ({
         />
 
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 group-live:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
             backgroundImage: `linear-gradient(${ambientColor}, transparent)`,
           }}
         />
 
-        <div className="relative z-10 flex h-full w-full items-center justify-center p-8">
+        <div className="relative z-10 flex h-full w-full items-center justify-center p-4 md:p-8">
           {item.bgWhite ? (
-            <div className="flex h-full w-full items-center justify-center rounded-xl bg-white p-6 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105">
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-white p-4 shadow-xl transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 group-live:scale-105 md:p-6">
               <img
                 src={item.logo}
                 alt={item.name}
@@ -74,7 +75,7 @@ const SponsorCard = ({
               <img
                 src={item.logo}
                 alt={item.name}
-                className="max-h-full max-w-full object-contain transition-all duration-700 group-hover:scale-110"
+                className="max-h-full max-w-full object-contain transition-all duration-700 group-hover:scale-110 group-live:scale-110"
               />
             </div>
           )}
@@ -82,14 +83,14 @@ const SponsorCard = ({
 
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
       </div>
-    </div>
+    </LiveGroup>
   );
 };
 
 export default function Sponsors() {
 
   return (
-    <div className="w-[80%] flex flex-col items-center justify-center mt-[150px] mb-[100px]">
+    <div className="mb-[60px] mt-[100px] flex w-full flex-col items-center justify-center px-5 md:mb-[100px] md:mt-[150px] md:w-[80%] md:px-0">
 
       {sponsors.title.length > 0 && (
         <div className="w-full flex flex-col items-center mb-[100px]">
@@ -110,7 +111,7 @@ export default function Sponsors() {
               <SponsorCard
                 key={i}
                 item={s}
-                className="h-64 md:h-72"
+                className="h-52 md:h-72"
                 borderColor="border-purple-500/20 hover:border-purple-500/50"
                 glowStyles="hover:shadow-[0_0_50px_-12px_rgba(168,85,247,0.3)]"
                 ambientColor="rgba(168,85,247,0.1)"
@@ -163,13 +164,13 @@ export default function Sponsors() {
             <div className="h-1 w-20 bg-white/20 mx-auto mt-4 rounded-full" />
           </motion.div>
 
-          <div className="w-full max-w-none px-3 md:px-10 lg:px-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="w-full max-w-none px-0 md:px-10 lg:px-16">
+            <div className="grid grid-cols-2 gap-3 md:gap-6 lg:grid-cols-3">
               {sponsors.coSponsors.map((s, i) => (
                 <SponsorCard
                   key={i}
                   item={s}
-                  className="h-48 md:h-56"
+                  className="h-36 sm:h-48 md:h-56"
                   borderColor="border-orange-500/20 hover:border-orange-500/50"
                   glowStyles="hover:shadow-[0_0_50px_-12px_rgba(249,115,22,0.3)]"
                   ambientColor="rgba(249,115,22,0.1)"

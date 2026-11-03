@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "motion/react";
+import { motion, useMotionTemplate, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
 import { Github, Globe, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import type { Member } from "@/src/data/team";
-import { usePointerFine } from "@/src/hooks/useMediaQuery";
+import { useLive } from "@/src/hooks/useLive";
 import { cn } from "@/src/lib/utils";
 
 function links(m: Member) {
@@ -20,12 +20,15 @@ function links(m: Member) {
 
 export function MemberBadge({ member, color, serial }: { member: Member; color: string; serial: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const fine = usePointerFine();
+  const { fine, live } = useLive(ref, "-30% 0px -30% 0px");
   const [open, setOpen] = useState(false);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
   const rx = useSpring(useTransform(py, [0, 1], [12, -12]), { stiffness: 170, damping: 16 });
   const ry = useSpring(useTransform(px, [0, 1], [-14, 14]), { stiffness: 170, damping: 16 });
+  const rxSoft = useTransform(rx, (v) => v * 0.45);
+  const rySoft = useTransform(ry, (v) => v * 0.45);
   const foilX = useTransform(px, [0, 1], [0, 100]);
   const foilY = useTransform(py, [0, 1], [0, 100]);
   const glareX = useTransform(px, [0, 1], [0, 100]);
@@ -34,12 +37,20 @@ export function MemberBadge({ member, color, serial }: { member: Member; color: 
   const glare = useMotionTemplate`radial-gradient(260px circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.35), transparent 60%)`;
   const show = open;
 
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    if (fine) return;
+    px.set(0.5 + Math.sin(p * Math.PI * 1.5) * 0.35);
+    py.set(0.15 + p * 0.7);
+  });
+
   return (
     <div className="[perspective:1000px]">
       <motion.div
         ref={ref}
-        style={{ rotateX: fine ? rx : 0, rotateY: fine ? ry : 0 }}
+        data-live={live || (!fine && open)}
+        style={{ rotateX: fine ? rx : rxSoft, rotateY: fine ? ry : rySoft }}
         onPointerMove={(e) => {
+          if (!fine) return;
           const r = ref.current?.getBoundingClientRect();
           if (!r) return;
           px.set((e.clientX - r.left) / r.width);
@@ -47,12 +58,13 @@ export function MemberBadge({ member, color, serial }: { member: Member; color: 
         }}
         onPointerEnter={() => fine && setOpen(true)}
         onPointerLeave={() => {
+          if (!fine) return;
           px.set(0.5);
           py.set(0.5);
-          if (fine) setOpen(false);
+          setOpen(false);
         }}
         onClick={() => !fine && setOpen((o) => !o)}
-        className="g-edge group relative aspect-[3/4.2] overflow-hidden rounded-[1.75rem] bg-ink-soft [--edge-opacity:0.25] [transform-style:preserve-3d]"
+        className="g-edge group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-ink-soft [--edge-opacity:0.25] [transform-style:preserve-3d] min-[480px]:aspect-[3/4.2]"
       >
         <Image
           src={member.image}
@@ -60,19 +72,19 @@ export function MemberBadge({ member, color, serial }: { member: Member; color: 
           fill
           placeholder="blur"
           sizes="(max-width: 640px) 90vw, (max-width: 1280px) 33vw, 300px"
-          className="scale-[1.06] object-cover grayscale-[65%] transition-[filter,transform] duration-700 group-hover:scale-[1.12] group-hover:grayscale-0"
+          className="scale-[1.06] object-cover grayscale-[65%] transition-[filter,transform] duration-700 group-hover:scale-[1.12] group-hover:grayscale-0 group-live:scale-[1.1] group-live:grayscale-0"
         />
 
         <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-0 mix-blend-color-dodge transition-opacity duration-500 group-hover:opacity-40"
+          className="pointer-events-none absolute inset-0 opacity-0 mix-blend-color-dodge transition-opacity duration-500 group-hover:opacity-40 group-live:opacity-35"
           style={{
             backgroundImage: "repeating-linear-gradient(115deg, #4285f4 0%, #ea4335 7%, #fbbc04 14%, #34a853 21%, #4285f4 28%)",
             backgroundSize: "260% 260%",
             backgroundPosition: foil,
           }}
         />
-        <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100" style={{ background: glare }} />
+        <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100 group-live:opacity-100" style={{ background: glare }} />
 
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
 
@@ -86,6 +98,11 @@ export function MemberBadge({ member, color, serial }: { member: Member; color: 
             {member.role}
           </p>
           <h3 className="mt-1.5 font-display text-2xl font-semibold leading-tight">{member.name}</h3>
+          {!fine && !show && (
+            <span aria-hidden="true" className="mt-2 inline-flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/55 transition-colors group-live:text-white/80">
+              <span className="h-1 w-1 rounded-full" style={{ background: color }} /> Tap to open
+            </span>
+          )}
           <div className={cn("grid transition-[grid-template-rows,opacity] duration-500 ease-out", show ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0")}>
             <div className="overflow-hidden">
               <div className="glass mt-4 rounded-2xl p-4">

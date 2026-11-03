@@ -15,13 +15,13 @@ export function TeamBoard() {
   return (
     <section className="pb-16">
       <div className="shell">
-        <div role="tablist" aria-label="Team groups" className="flex flex-wrap items-end justify-center gap-x-10 gap-y-4">
+        <div role="tablist" aria-label="Team groups" className="no-scrollbar -mx-5 flex items-end gap-x-7 overflow-x-auto px-5 mask-fade-x sm:mx-0 sm:flex-wrap sm:justify-center sm:gap-x-10 sm:gap-y-4 sm:overflow-visible sm:px-0 sm:[mask-image:none]">
           {TEAM.map((g, i) => {
             const on = i === active;
             const c = COLOR_HEX[g.color];
             return (
-              <button key={g.id} role="tab" aria-selected={on} onClick={() => setActive(i)} className="group relative pb-3">
-                <span className={cn("font-display text-[clamp(1.6rem,3.6vw,2.8rem)] font-semibold tracking-[-0.03em] transition-colors duration-300", on ? "" : "text-white/30 group-hover:text-white/60")} style={on ? { color: c } : undefined}>
+              <button key={g.id} role="tab" aria-selected={on} onClick={(e) => { setActive(i); e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" }); }} className="group relative shrink-0 whitespace-nowrap pb-3 first:ml-auto last:mr-auto">
+                <span className={cn("font-display text-[clamp(1.5rem,3.6vw,2.8rem)] font-semibold tracking-[-0.03em] transition-colors duration-300", on ? "" : "text-white/30 group-hover:text-white/60")} style={on ? { color: c } : undefined}>
                   {g.title === "Our" ? g.accent : `${g.title} ${g.accent}`}
                 </span>
                 <sup className="ml-1 font-mono text-xs text-mist">{String(g.members.length).padStart(2, "0")}</sup>
@@ -34,13 +34,13 @@ export function TeamBoard() {
         </div>
 
         <AnimatePresence mode="wait">
-          <motion.p key={group.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="mx-auto mt-8 max-w-xl text-center text-ash">
+          <motion.p key={group.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="mx-auto mt-6 max-w-xl text-center text-ash sm:mt-8">
             {group.lead}
           </motion.p>
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          <motion.div key={group.id} className="mt-12 grid grid-cols-1 gap-5 min-[480px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4" exit={{ opacity: 0, transition: { duration: 0.2 } }}>
+          <motion.div key={group.id} className="mt-10 grid grid-cols-1 gap-5 sm:mt-12 min-[480px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4" exit={{ opacity: 0, transition: { duration: 0.2 } }}>
             {group.members.map((m, i) => (
               <motion.div
                 key={m.id}

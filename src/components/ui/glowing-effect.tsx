@@ -107,6 +107,9 @@ const GlowingEffect = memo(
       document.body.addEventListener("pointermove", handlePointerMove, {
         passive: true,
       });
+      document.body.addEventListener("pointerdown", handlePointerMove, {
+        passive: true,
+      });
 
       return () => {
         if (animationFrameRef.current) {
@@ -114,6 +117,7 @@ const GlowingEffect = memo(
         }
         window.removeEventListener("scroll", handleScroll);
         document.body.removeEventListener("pointermove", handlePointerMove);
+        document.body.removeEventListener("pointerdown", handlePointerMove);
       };
     }, [handleMove, disabled]);
 

@@ -14,7 +14,7 @@ export default function TeamPage() {
       <PageHero
         kicker={`${ALL_MEMBERS.length} people · ${TEAM.length} groups`}
         title={["Meet the", <span key="b" className="g-text">builders.</span>]}
-        lead="Pick a group and hover any card to read their story and find them online."
+        lead="Pick a group and open any card to read their story and find them online."
       />
       <TeamBoard />
     </>

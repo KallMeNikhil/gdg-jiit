@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { CtaButton } from "../components/ui/CtaButton";
 
@@ -24,6 +24,27 @@ export default function NotFound() {
   const y2 = useTransform(sy, (v) => v * layers[2].depth);
   const x3 = useTransform(sx, (v) => v * layers[3].depth);
   const y3 = useTransform(sy, (v) => v * layers[3].depth);
+  useEffect(() => {
+    if (window.matchMedia("(pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    let touchedAt = -Infinity;
+    const onTouch = () => {
+      touchedAt = performance.now();
+    };
+    const loop = (t: number) => {
+      raf = requestAnimationFrame(loop);
+      if (t - touchedAt < 1500) return;
+      mx.set(Math.sin(t / 1400) * 0.4);
+      my.set(Math.cos(t / 1900) * 0.3);
+    };
+    raf = requestAnimationFrame(loop);
+    window.addEventListener("touchstart", onTouch, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("touchstart", onTouch);
+    };
+  }, [mx, my]);
+
   const offsets = [
     { x: x0, y: y0 },
     { x: x1, y: y1 },

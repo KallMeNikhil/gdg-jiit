@@ -28,8 +28,8 @@ export default function JoinPage() {
             </Reveal>
             <ul className="mt-6 space-y-3">
               {PERKS.map((p, i) => (
-                <Reveal as="li" key={p.title} delay={0.1 + i * 0.07} className="group flex gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 transition-colors hover:border-white/20">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110" style={{ background: `${p.color}1f`, color: p.color }}>
+                <Reveal as="li" key={p.title} delay={0.1 + i * 0.07} className="group flex gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 transition-colors hover:border-white/20 active:border-white/20">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 group-active:-rotate-6 group-active:scale-110" style={{ background: `${p.color}1f`, color: p.color }}>
                     <p.icon size={20} />
                   </span>
                   <span>

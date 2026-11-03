@@ -28,23 +28,23 @@ export default function ContactPage() {
       <section className="pb-16">
         <div className="shell grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="space-y-4">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3">
               {CHANNELS.map((c, i) => (
                 <Reveal key={c.label} delay={i * 0.06}>
                   <a
                     href={c.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] glass p-6 transition-[border-color,transform] duration-500 hover:-translate-y-1"
+                    className="group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] glass p-5 sm:p-6 transition-[border-color,transform] duration-500 hover:-translate-y-1 active:scale-[0.98]"
                   >
-                    <span aria-hidden="true" className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-60" style={{ background: c.color }} />
+                    <span aria-hidden="true" className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-60 group-active:opacity-60" style={{ background: c.color }} />
                     <div className="relative flex items-center justify-between">
                       <span className="flex h-11 w-11 items-center justify-center rounded-xl" style={{ background: `${c.color}1f`, color: c.color }}>
                         <c.icon size={20} />
                       </span>
-                      <ArrowUpRight size={18} className="text-mist transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-bone" />
+                      <ArrowUpRight size={18} className="text-mist transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-bone group-active:text-bone" />
                     </div>
-                    <p className="relative mt-8 font-display text-xl font-semibold">{c.label}</p>
+                    <p className="relative mt-6 font-display text-xl font-semibold sm:mt-8">{c.label}</p>
                     <p className="relative text-sm text-ash">{c.handle}</p>
                   </a>
                 </Reveal>

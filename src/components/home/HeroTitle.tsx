@@ -22,6 +22,7 @@ export function HeroTitle({ play }: { play: boolean }) {
               animate={play ? { y: 0, opacity: 1, rotate: 0 } : undefined}
               transition={{ type: "spring", stiffness: 380, damping: 15, delay: 0.15 + k * 0.045 }}
               whileHover={{ y: -16, rotate: k % 2 ? 8 : -8, transition: { type: "spring", stiffness: 500, damping: 10 } }}
+              whileTap={{ y: -14, rotate: k % 2 ? 10 : -10, scale: 1.08, transition: { type: "spring", stiffness: 500, damping: 10 } }}
             >
               <span
                 className="inline-block"
@@ -72,7 +73,7 @@ export function HeroMotto({ text, play }: { text: string; play: boolean }) {
   }, [play, reduced, text]);
 
   return (
-    <p aria-label={text} className="mt-8 flex h-[1.4em] items-center justify-center font-mono text-[clamp(1rem,2.1vw,1.55rem)] font-medium uppercase tracking-[0.28em]">
+    <p aria-label={text} className="mt-7 flex min-h-[1.4em] flex-wrap items-center justify-center text-center font-mono text-[clamp(0.8rem,3.4vw,1.55rem)] font-medium uppercase tracking-[0.2em] sm:mt-8 sm:h-[1.4em] sm:tracking-[0.28em]">
       <span aria-hidden="true" className="flow-text">{text.slice(0, count)}</span>
       <span aria-hidden="true" className="ml-1 inline-block h-[1.1em] w-[3px] animate-blink rounded-full" style={{ background: "linear-gradient(#4285f4, #ea4335, #fbbc04, #34a853)" }} />
     </p>
