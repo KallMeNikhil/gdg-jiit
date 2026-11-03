@@ -11,11 +11,11 @@ import {
 export const SITE = {
   name: "GDG JIIT",
   shortName: "GDG 128",
-  longName: "Google Developer Groups on Campus — JIIT 128",
+  longName: "Google Developer Groups on Campus - JIIT 128",
   campus: "JIIT, Sector 128, Noida",
   motto: "Giving Direction to Greatness",
   tagline:
-    "The student-led developer community of JIIT 128 — where students learn Google technologies, build real projects and grow together through sessions, study jams and hackathons.",
+    "The student-led developer community of JIIT 128 - where students learn Google technologies, build real projects and grow together through sessions, study jams and hackathons.",
   mission:
     "With our motto being Giving Direction to Greatness, we help students climb mountains on their own, as high as possible. We provide the tools, the community and the guidance that turn curiosity into industry-ready expertise.",
 };
@@ -92,7 +92,7 @@ export const DOMAINS: Domain[] = [
   },
   {
     title: "App Development",
-    body: "Native and cross-platform apps with Android, Kotlin and Flutter — built and shipped to real users.",
+    body: "Native and cross-platform apps with Android, Kotlin and Flutter - built and shipped to real users.",
     icon: Smartphone,
     color: "green",
     stack: ["Android", "Flutter", "Compose"],
@@ -142,7 +142,7 @@ export const PROGRAMS: Program[] = [
     slug: "bitbox",
     title: "BitBox",
     kicker: "Flagship hackathon",
-    body: "Six editions of our annual hackathon — teams building a working prototype from scratch, judged by engineers from the industry.",
+    body: "Six editions of our annual hackathon - teams building a working prototype from scratch, judged by engineers from the industry.",
     image: "/hackathon.webp",
     color: "blue",
     href: "/bitbox",
@@ -167,7 +167,7 @@ export const PROGRAMS: Program[] = [
     slug: "sessions",
     title: "Sessions & Bootcamps",
     kicker: "Hands-on workshops",
-    body: "Practical sessions on Git, web, Android and more — plus multi-day bootcamps where you build an app end to end.",
+    body: "Practical sessions on Git, web, Android and more - plus multi-day bootcamps where you build an app end to end.",
     image: "/bootcamp.webp",
     color: "yellow",
   },
@@ -218,7 +218,7 @@ export const JOURNEY: JourneyStep[] = [
 export const FAQ = [
   {
     q: "Who can join GDG JIIT?",
-    a: "Any student at JIIT 128 who is curious about technology. There is no prerequisite — beginners are exactly who we build our sessions for.",
+    a: "Any student at JIIT 128 who is curious about technology. There is no prerequisite - beginners are exactly who we build our sessions for.",
   },
   {
     q: "Do I need to know how to code?",
@@ -238,7 +238,7 @@ export const FAQ = [
   },
   {
     q: "How do I stay updated about events?",
-    a: "Follow us on Instagram and join our Discord — every session, Study Jam and hackathon is announced there first.",
+    a: "Follow us on Instagram and join our Discord - every session, Study Jam and hackathon is announced there first.",
   },
 ];
 
@@ -246,7 +246,7 @@ export const HISTORY = [
   {
     year: "Origins",
     title: "Developer Student Clubs",
-    body: "The chapter starts as DSC JIIT 128 — a handful of students, a shared Discord and a habit of building things together.",
+    body: "The chapter starts as DSC JIIT 128 - a handful of students, a shared Discord and a habit of building things together.",
     color: "blue" as GoogleColor,
   },
   {
@@ -256,13 +256,13 @@ export const HISTORY = [
     color: "red" as GoogleColor,
   },
   {
-    year: "2022–23",
+    year: "2022-23",
     title: "Season of sessions",
     body: "Orientation, roadmaps, Git & GitHub, Compose Camp, crypto and a three-day bootcamp. BitBox 3.0 takes the stage.",
     color: "yellow" as GoogleColor,
   },
   {
-    year: "2023–24",
+    year: "2023-24",
     title: "Into AI",
     body: "AI, ML and deep learning sessions open up machine learning to every year of students.",
     color: "green" as GoogleColor,
@@ -270,7 +270,7 @@ export const HISTORY = [
   {
     year: "2024",
     title: "GDG on Campus",
-    body: "Student clubs worldwide become Google Developer Groups on Campus — same people, a wider community.",
+    body: "Student clubs worldwide become Google Developer Groups on Campus - same people, a wider community.",
     color: "blue" as GoogleColor,
   },
   {

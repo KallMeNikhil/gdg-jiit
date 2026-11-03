@@ -1,119 +1,306 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
 import { COLOR_HEX, JOURNEY } from "@/src/data/site";
 import { SectionHeading } from "../motion/SectionHeading";
 
-const PATH = "M 500 0 C 500 100, 220 100, 220 200 S 780 330, 780 430 S 220 560, 220 660 S 500 760, 500 860";
-const NODES = [
-  { x: 220, y: 200 },
-  { x: 780, y: 430 },
-  { x: 220, y: 660 },
-  { x: 500, y: 860 },
+const ROUTE = "M 40 575 C 70 560, 95 540, 120 520 C 210 450, 300 470, 370 405 C 450 335, 540 340, 610 280 C 690 215, 760 190, 820 130 C 845 105, 860 92, 885 80";
+const STOPS = [
+  { x: 120, y: 520 },
+  { x: 370, y: 405 },
+  { x: 610, y: 280 },
+  { x: 885, y: 80 },
 ];
+const CAMPS = ["Base camp", "Camp I", "Camp II", "Summit"];
+const RIDGE_BACK = "M 0 600 L 0 420 L 120 360 L 210 395 L 330 280 L 430 330 L 560 190 L 650 250 L 760 120 L 860 60 L 940 110 L 1000 90 L 1000 600 Z";
+const RIDGE_FRONT = "M 0 600 L 0 560 L 120 520 L 250 470 L 370 405 L 480 360 L 610 280 L 700 230 L 820 130 L 885 80 L 950 150 L 1000 190 L 1000 600 Z";
+const SKY = "M 0 -260 L 1000 -260 L 1000 190 L 950 150 L 885 80 L 820 130 L 700 230 L 610 280 L 480 360 L 370 405 L 250 470 L 120 520 L 0 560 Z";
+const PEAK = { x: 885, y: 80 };
+const SUMMIT = 2026;
+const STARS = Array.from({ length: 34 }, (_, i) => ({ x: (i * 137 + 40) % 1000, y: 12 + ((i * 61) % 300), r: i % 5 === 0 ? 1.8 : 1.1, twinkle: i % 3 === 0 }));
+const CONFETTI = Array.from({ length: 28 }, (_, i) => {
+  const a = (i / 28) * Math.PI * 2 + (i % 2 ? 0.2 : 0);
+  const d = 60 + ((i * 37) % 70);
+  return { dx: Math.cos(a) * d, dy: Math.sin(a) * d * 0.8 - 30, color: ["#4285f4", "#ea4335", "#fbbc04", "#34a853"][i % 4], square: i % 3 === 0 };
+});
+const ease = [0.16, 1, 0.3, 1] as const;
 
-function Stop({ i, progress }: { i: number; progress: MotionValue<number> }) {
-  const step = JOURNEY[i];
-  const hex = COLOR_HEX[step.color];
-  const at = (i + 1) / (NODES.length + 0.2);
-  const lit = useTransform(progress, [at - 0.06, at], [0, 1]);
-  const scale = useTransform(lit, [0, 1], [0.6, 1]);
-  const glow = useTransform(lit, [0, 1], ["0 0 0 0 rgba(0,0,0,0)", `0 0 0 10px ${hex}22, 0 0 44px ${hex}`]);
-  const cardOpacity = useTransform(lit, [0, 1], [0.25, 1]);
-  const cardX = useTransform(lit, [0, 1], [NODES[i].x > 500 ? 40 : -40, 0]);
-  const right = NODES[i].x > 500;
-  const last = i === NODES.length - 1;
+function Flag({ i, progress, at }: { i: number; progress: MotionValue<number>; at: number }) {
+  const hex = COLOR_HEX[JOURNEY[i].color];
+  const lit = useTransform(progress, [at - 0.04, at], [0, 1]);
+  const rise = useTransform(lit, [0, 1], [10, 0]);
+  const glow = useTransform(lit, [0, 1], [0, 0.9]);
+  const { x, y } = STOPS[i];
 
   return (
-    <div className="absolute" style={{ left: `${NODES[i].x / 10}%`, top: `${(NODES[i].y / 860) * 100}%` }}>
-      <motion.span
-        style={{ scale, boxShadow: glow, background: hex }}
-        className="absolute left-0 top-0 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl font-mono text-sm font-semibold text-ink"
-      >
-        0{i + 1}
-      </motion.span>
-      <motion.div
-        style={{ opacity: cardOpacity, x: cardX }}
-        className={`glass absolute w-[min(22rem,40vw)] -translate-y-1/2 rounded-3xl p-6 ${last ? "left-1/2 top-16 -translate-x-1/2 translate-y-0 text-center" : right ? "right-12" : "left-12"}`}
-      >
-        <h3 className="text-xl font-semibold sm:text-2xl">{step.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-ash">{step.body}</p>
-      </motion.div>
+    <g>
+      <motion.circle cx={x} cy={y} r={18} fill={hex} style={{ opacity: glow }} filter="url(#journey-blur)" />
+      <circle cx={x} cy={y} r={6} fill="#07080b" stroke={hex} strokeWidth={2.5} />
+      <motion.g style={{ opacity: lit, y: rise }}>
+        <line x1={x} y1={y - 6} x2={x} y2={y - 48} stroke="rgba(243,244,246,0.7)" strokeWidth={2} strokeLinecap="round" />
+        <path
+          d={`M ${x} ${y - 48} L ${x + 26} ${y - 40} L ${x} ${y - 31} Z`}
+          fill={hex}
+          style={{ transformBox: "fill-box", transformOrigin: "0% 50%", animation: `flag-wave ${2.4 + i * 0.3}s ease-in-out infinite` }}
+        />
+      </motion.g>
+      <text x={x + 12} y={y + 26} fill="rgba(243,244,246,0.5)" fontSize={13} fontFamily="var(--font-jetbrains), monospace" letterSpacing="2">
+        {String(i + 1).padStart(2, "0")}
+      </text>
+    </g>
+  );
+}
+
+function Sunrise({ up }: { up: boolean }) {
+  return (
+    <g clipPath="url(#journey-sky)">
+      <motion.g initial={false} animate={{ y: up ? 0 : 150, opacity: up ? 1 : 0 }} transition={{ duration: 1.4, ease }}>
+        <circle cx={PEAK.x} cy={PEAK.y - 62} r={120} fill="url(#journey-halo)" />
+        <g style={{ transformBox: "view-box", transformOrigin: `${PEAK.x}px ${PEAK.y - 62}px`, animation: "spin 36s linear infinite" }}>
+          {Array.from({ length: 12 }, (_, i) => (
+            <line
+              key={i}
+              x1={PEAK.x}
+              y1={PEAK.y - 62 - 52}
+              x2={PEAK.x}
+              y2={PEAK.y - 62 - 104}
+              stroke="rgba(243,244,246,0.16)"
+              strokeWidth={2}
+              strokeLinecap="round"
+              transform={`rotate(${i * 30} ${PEAK.x} ${PEAK.y - 62})`}
+            />
+          ))}
+        </g>
+        <g transform={`translate(${PEAK.x} ${PEAK.y - 62})`} strokeWidth={11} strokeLinecap="round" fill="none">
+          <line x1={-12} y1={-15} x2={-36} y2={0} stroke="#ea4335" />
+          <line x1={-36} y1={0} x2={-12} y2={15} stroke="#4285f4" />
+          <line x1={12} y1={-15} x2={36} y2={0} stroke="#34a853" />
+          <line x1={36} y1={0} x2={12} y2={15} stroke="#fbbc04" />
+        </g>
+      </motion.g>
+    </g>
+  );
+}
+
+function Burst({ run }: { run: number }) {
+  if (!run) return null;
+  return (
+    <g>
+      {CONFETTI.map((c, i) => (
+        <motion.g
+          key={i}
+          initial={{ x: PEAK.x, y: PEAK.y - 20, opacity: 1, scale: 0.4, rotate: 0 }}
+          animate={{ x: PEAK.x + c.dx, y: PEAK.y - 20 + c.dy + 40, opacity: 0, scale: 1, rotate: c.square ? 180 : 0 }}
+          transition={{ duration: 1.5, ease: [0.2, 0.7, 0.3, 1], delay: (i % 7) * 0.02 }}
+        >
+          {c.square ? <rect x={-3.5} y={-3.5} width={7} height={7} rx={1.5} fill={c.color} /> : <circle r={3.5} fill={c.color} />}
+        </motion.g>
+      ))}
+    </g>
+  );
+}
+
+function Altimeter({ progress, summit }: { progress: MotionValue<number>; summit: boolean }) {
+  const metres = useTransform(progress, (v) => Math.round(Math.min(Math.max(v, 0), 1) * SUMMIT).toString().padStart(4, "0"));
+  return (
+    <div className="flex items-center gap-3 lg:flex-col lg:items-end lg:gap-4">
+      <span className="kicker !tracking-[0.3em]">Altitude</span>
+      <div className="relative h-1 w-24 overflow-hidden rounded-full bg-white/10 lg:h-40 lg:w-1">
+        <motion.div style={{ scaleX: progress, background: "var(--g-gradient)" }} className="absolute inset-0 origin-left rounded-full lg:hidden" />
+        <motion.div style={{ scaleY: progress, background: "linear-gradient(0deg, #4285f4, #ea4335, #fbbc04, #34a853)" }} className="absolute inset-0 hidden origin-bottom rounded-full lg:block" />
+      </div>
+      <p className="font-mono text-sm tabular-nums transition-[color,text-shadow] duration-500" style={summit ? { color: "#fbbc04", textShadow: "0 0 14px rgba(251,188,4,0.6)" } : { color: "#f3f4f6" }}>
+        <motion.span>{metres}</motion.span>
+        <span className="ml-1 text-mist">m</span>
+      </p>
     </div>
   );
 }
 
-function Winding() {
+function Climb() {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.7", "end 0.7"] });
-  const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 24, restDelta: 0.001 });
+  const pathRef = useRef<SVGPathElement>(null);
+  const [fracs, setFracs] = useState([0.08, 0.36, 0.66, 1]);
+  const [active, setActive] = useState(0);
+  const [summit, setSummit] = useState(false);
+  const [burst, setBurst] = useState(0);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const eased = useSpring(scrollYProgress, { stiffness: 110, damping: 26, restDelta: 0.001 });
+  const progress = useTransform(eased, [0.04, 0.86], [0, 1], { clamp: true });
+  const cx = useMotionValue(STOPS[0].x);
+  const cy = useMotionValue(575);
+  const backY = useTransform(progress, [0, 1], [0, -26]);
+  const stars = useTransform(progress, [0.25, 1], [0.05, 0.9]);
+  const cloudA = useTransform(progress, [0, 1], [-120, 140]);
+  const cloudB = useTransform(progress, [0, 1], [80, -160]);
+  const glowX = useTransform(progress, [0, 1], ["15%", "85%"]);
+
+  useEffect(() => {
+    const path = pathRef.current;
+    if (!path) return;
+    const total = path.getTotalLength();
+    const next = STOPS.map(({ x, y }) => {
+      let best = 0;
+      let dist = Infinity;
+      for (let l = 0; l <= total; l += 2) {
+        const p = path.getPointAtLength(l);
+        const d = (p.x - x) ** 2 + (p.y - y) ** 2;
+        if (d < dist) {
+          dist = d;
+          best = l;
+        }
+      }
+      return best / total;
+    });
+    const id = requestAnimationFrame(() => setFracs(next));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  useMotionValueEvent(progress, "change", (v) => {
+    const path = pathRef.current;
+    if (path) {
+      const point = path.getPointAtLength(Math.min(Math.max(v, 0), 1) * path.getTotalLength());
+      cx.set(point.x);
+      cy.set(point.y);
+    }
+    let i = 0;
+    fracs.forEach((f, k) => {
+      if (v >= f - 0.04) i = k;
+    });
+    if (i !== active) setActive(i);
+    const top = v >= 0.985;
+    if (top !== summit) {
+      setSummit(top);
+      if (top) setBurst((b) => b + 1);
+    }
+  });
+
+  const step = JOURNEY[active];
+  const hex = COLOR_HEX[step.color];
 
   return (
-    <div ref={ref} className="relative mx-auto mt-16 hidden aspect-[1000/1080] max-w-4xl md:block">
-      <svg viewBox="0 0 1000 860" className="absolute inset-0 h-[88%] w-full overflow-visible" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="journey-road" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#4285f4" />
-            <stop offset="0.35" stopColor="#ea4335" />
-            <stop offset="0.65" stopColor="#fbbc04" />
-            <stop offset="1" stopColor="#34a853" />
-          </linearGradient>
-        </defs>
-        <path d={PATH} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="22" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-        <path d={PATH} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="2" strokeDasharray="6 14" vectorEffect="non-scaling-stroke" />
-        <motion.path d={PATH} fill="none" stroke="url(#journey-road)" strokeWidth="8" strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ pathLength: progress, filter: "drop-shadow(0 0 10px rgba(66,133,244,0.6))" }} />
-      </svg>
-      <div className="absolute inset-0 h-[88%]">
-        {NODES.map((_, i) => (
-          <Stop key={i} i={i} progress={progress} />
-        ))}
+    <div ref={ref} style={{ height: `${JOURNEY.length * 75 + 60}vh` }} className="relative">
+      <div className="sticky top-0 flex h-[100svh] items-center overflow-hidden">
+        <motion.div aria-hidden="true" style={{ left: glowX, background: `radial-gradient(circle, ${hex}33, transparent 65%)` }} className="pointer-events-none absolute top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full transition-[background] duration-700" />
+
+        <div className="shell relative grid w-full items-center gap-4 pt-10 sm:gap-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.5fr)_auto] lg:gap-10">
+          <div className="order-2 min-h-[13.5rem] lg:order-1 lg:min-h-[20rem]">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div key={step.id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.45, ease }}>
+                <p className="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.3em]" style={{ color: hex }}>
+                  {CAMPS[active]}
+                </p>
+                <div className="mt-3 flex items-end gap-4 lg:mt-4">
+                  <span className="font-display text-[clamp(3.6rem,9vw,8.5rem)] font-bold leading-[0.8] tracking-[-0.06em] text-transparent" style={{ WebkitTextStroke: `1.5px ${hex}` }}>
+                    {String(active + 1).padStart(2, "0")}
+                  </span>
+                  <span className="mb-2 font-mono text-xs text-mist">/ {String(JOURNEY.length).padStart(2, "0")}</span>
+                </div>
+                <h3 className="mt-3 text-balance text-[clamp(1.5rem,3vw,2.6rem)] font-semibold lg:mt-5">{step.title}</h3>
+                <p className="mt-3 max-w-sm text-pretty leading-relaxed text-ash lg:text-lg">{step.body}</p>
+                <AnimatePresence>
+                  {summit && active === JOURNEY.length - 1 && (
+                    <motion.span
+                      initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6 }}
+                      transition={{ duration: 0.5, ease, delay: 0.3 }}
+                      className="g-edge edge-2 mt-4 inline-flex lg:mt-6 items-center gap-3 rounded-full bg-white/[0.04] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.25em] text-bone [--edge-opacity:0.9]"
+                      data-live="true"
+                    >
+                      <span className="g-dots [--dot:5px]">
+                        <i />
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                      Summit reached
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <svg viewBox="0 0 1000 600" className="h-auto w-full overflow-visible" aria-hidden="true">
+              <defs>
+                <linearGradient id="journey-route" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0" stopColor="#4285f4" />
+                  <stop offset="0.35" stopColor="#34a853" />
+                  <stop offset="0.65" stopColor="#fbbc04" />
+                  <stop offset="1" stopColor="#ea4335" />
+                </linearGradient>
+                <linearGradient id="journey-ridge" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="rgba(255,255,255,0.09)" />
+                  <stop offset="1" stopColor="rgba(255,255,255,0)" />
+                </linearGradient>
+                <radialGradient id="journey-halo">
+                  <stop offset="0" stopColor="rgba(251,188,4,0.35)" />
+                  <stop offset="0.45" stopColor="rgba(234,67,53,0.12)" />
+                  <stop offset="1" stopColor="rgba(234,67,53,0)" />
+                </radialGradient>
+                <radialGradient id="journey-cloud">
+                  <stop offset="0" stopColor="rgba(243,244,246,0.16)" />
+                  <stop offset="1" stopColor="rgba(243,244,246,0)" />
+                </radialGradient>
+                <clipPath id="journey-sky">
+                  <path d={SKY} />
+                </clipPath>
+                <filter id="journey-blur" x="-100%" y="-100%" width="300%" height="300%">
+                  <feGaussianBlur stdDeviation="8" />
+                </filter>
+              </defs>
+              <motion.g clipPath="url(#journey-sky)" style={{ opacity: stars }}>
+                {STARS.map((st, i) => (
+                  <circle
+                    key={i}
+                    cx={st.x}
+                    cy={st.y}
+                    r={st.r}
+                    fill="#f3f4f6"
+                    style={st.twinkle ? { animation: `twinkle ${2.6 + (i % 4) * 0.7}s ease-in-out ${(i % 5) * 0.4}s infinite` } : undefined}
+                  />
+                ))}
+              </motion.g>
+              <Sunrise up={summit} />
+              <motion.path d={RIDGE_BACK} fill="url(#journey-ridge)" opacity={0.6} style={{ y: backY }} />
+              <path d={RIDGE_FRONT} fill="url(#journey-ridge)" stroke="rgba(255,255,255,0.12)" strokeWidth={1.5} />
+              <path d={ROUTE} fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth={2} strokeDasharray="2 10" strokeLinecap="round" />
+              <motion.path ref={pathRef} d={ROUTE} fill="none" stroke="url(#journey-route)" strokeWidth={5} strokeLinecap="round" style={{ pathLength: progress }} />
+              {STOPS.map((_, i) => (
+                <Flag key={i} i={i} progress={progress} at={fracs[i]} />
+              ))}
+              <motion.ellipse cx={300} cy={330} rx={170} ry={26} fill="url(#journey-cloud)" style={{ x: cloudA }} />
+              <motion.ellipse cx={720} cy={200} rx={150} ry={22} fill="url(#journey-cloud)" style={{ x: cloudB }} />
+              <Burst key={burst} run={burst} />
+              <motion.circle cx={cx} cy={cy} r={16} fill="#f3f4f6" opacity={0.25} filter="url(#journey-blur)" />
+              <motion.circle cx={cx} cy={cy} r={7} fill="#f3f4f6" />
+            </svg>
+          </div>
+
+          <div className="order-3 flex justify-start lg:justify-end">
+            <Altimeter progress={progress} summit={summit} />
+          </div>
+        </div>
       </div>
     </div>
-  );
-}
-
-function Stacked() {
-  return (
-    <ol className="mt-12 space-y-4 md:hidden">
-      {JOURNEY.map((s, i) => {
-        const hex = COLOR_HEX[s.color];
-        return (
-          <motion.li
-            key={s.id}
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="glass flex gap-4 rounded-3xl p-5"
-          >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-mono text-sm font-semibold text-ink" style={{ background: hex, boxShadow: `0 0 24px ${hex}88` }}>
-              0{i + 1}
-            </span>
-            <span>
-              <span className="block text-lg font-semibold">{s.title}</span>
-              <span className="mt-1 block text-sm text-ash">{s.body}</span>
-            </span>
-          </motion.li>
-        );
-      })}
-    </ol>
   );
 }
 
 export function Journey() {
   return (
-    <section id="journey" className="relative py-24 sm:py-32">
+    <section id="journey" className="relative pt-24 sm:pt-32">
       <div className="shell">
         <SectionHeading
           index="04"
           eyebrow="Your journey"
           title={<>From first session to <span className="g-text">core team.</span></>}
-          lead="Every member's path looks a little different, but most of them travel this road."
+          lead="Every member climbs at their own pace. Scroll the route most of them take."
         />
-        <Winding />
-        <Stacked />
       </div>
+      <Climb />
     </section>
   );
 }

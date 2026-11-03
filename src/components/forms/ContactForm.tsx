@@ -24,7 +24,7 @@ export function ContactForm() {
     const errs: Partial<Form> = {};
     if (form.name.trim().length < 2) errs.name = "Please tell us your name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errs.email = "That email does not look right.";
-    if (form.message.trim().length < 10) errs.message = "A little more detail, please — at least 10 characters.";
+    if (form.message.trim().length < 10) errs.message = "A little more detail, please - at least 10 characters.";
     setErrors(errs);
     if (Object.keys(errs).length) return;
     setStatus("sending");

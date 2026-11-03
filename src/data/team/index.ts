@@ -83,7 +83,7 @@ export const TEAM: TeamGroup[] = [
     id: "leads",
     title: "Team",
     accent: "Leads",
-    lead: "The people who run each domain — planning sessions, reviewing code and keeping the chapter moving.",
+    lead: "The people who run each domain - planning sessions, reviewing code and keeping the chapter moving.",
     color: "red",
     members: toMembers("lead", leads as unknown as RawMember[]),
   },

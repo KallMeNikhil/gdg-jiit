@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef } from "react";
-import { motion, useMotionTemplate, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
+import React, { useCallback, useEffect } from "react";
+import { motion, useMotionTemplate, useMotionValue } from "motion/react";
 import { useLive } from "@/src/hooks/useLive";
 import "./MagicCard.css";
 
@@ -24,25 +24,14 @@ export function MagicCard({
   gradientFrom = "#9E7AFF",
   gradientTo = "#FE8BBB",
 }: MagicCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { fine, live } = useLive(ref);
+  const { fine, live, tap } = useLive();
   const mouseX = useMotionValue(-gradientSize);
   const mouseY = useMotionValue(-gradientSize);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
 
   const reset = useCallback(() => {
     mouseX.set(-gradientSize);
     mouseY.set(-gradientSize);
   }, [gradientSize, mouseX, mouseY]);
-
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
-    if (fine) return;
-    const el = ref.current;
-    if (!el) return;
-    const { offsetWidth: w, offsetHeight: h } = el;
-    mouseX.set(w * (0.1 + 0.8 * p) + Math.sin(p * Math.PI * 2) * w * 0.08);
-    mouseY.set(h * (1.1 - 1.2 * p));
-  });
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -54,8 +43,8 @@ export function MagicCard({
   );
 
   useEffect(() => {
-    if (fine) reset();
-  }, [reset, fine]);
+    reset();
+  }, [reset]);
 
   useEffect(() => {
     if (!fine) return;
@@ -80,11 +69,17 @@ export function MagicCard({
 
   return (
     <div
-      ref={ref}
       data-live={live}
       className={`magic-card ${className}`}
       onPointerMove={fine ? handlePointerMove : undefined}
-      onPointerDown={fine ? undefined : handlePointerMove}
+      onClick={
+        fine
+          ? undefined
+          : (e) => {
+              handlePointerMove(e as unknown as React.PointerEvent<HTMLDivElement>);
+              tap();
+            }
+      }
       onPointerLeave={fine ? reset : undefined}
       onPointerEnter={fine ? reset : undefined}
     >

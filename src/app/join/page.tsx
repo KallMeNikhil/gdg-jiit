@@ -13,7 +13,7 @@ const PERKS = [
   { icon: CalendarCheck, title: "Early access to events", body: "Hear about sessions, Study Jams and hackathons before anyone else.", color: "#4285f4" },
   { icon: GraduationCap, title: "Mentors who reply", body: "Seniors and alumni who review your code and your resume.", color: "#34a853" },
   { icon: Rocket, title: "Projects that ship", body: "Teams and ideas to build something real, not just tutorials.", color: "#ea4335" },
-  { icon: MessagesSquare, title: "A community on Discord", body: "Ask anything, any time — someone has been stuck there before.", color: "#fbbc04" },
+  { icon: MessagesSquare, title: "A community on Discord", body: "Ask anything, any time - someone has been stuck there before.", color: "#fbbc04" },
 ];
 
 export default function JoinPage() {

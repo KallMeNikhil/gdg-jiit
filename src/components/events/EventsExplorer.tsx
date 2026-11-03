@@ -68,7 +68,7 @@ export function EventsExplorer() {
   };
 
   const seasonOptions = useMemo(
-    () => [{ id: "all", label: "All seasons", count: EVENTS.length }, ...SEASONS.map((s) => ({ id: s as string, label: s.replace("-", "–"), count: EVENTS.filter((e) => e.season === s).length }))],
+    () => [{ id: "all", label: "All seasons", count: EVENTS.length }, ...SEASONS.map((s) => ({ id: s as string, label: s.replace("-", "-"), count: EVENTS.filter((e) => e.season === s).length }))],
     [],
   );
 

@@ -25,7 +25,7 @@ export function Mission() {
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="mx-auto max-w-5xl text-balance text-center font-display text-[clamp(1.45rem,4.2vw,3.4rem)] font-medium leading-[1.25] tracking-[-0.03em]"
         >
-          With our motto being <span className="whitespace-nowrap"><Highlight color="#4285f4" delay={0.2}>Giving Direction to Greatness</Highlight>,</span> we help students climb mountains on their own — as high as possible. We bring the <Highlight color="#ea4335" delay={0.55}>tools</Highlight>, the <Highlight color="#fbbc04" delay={0.75}>community</Highlight> and the <Highlight color="#34a853" delay={0.95}>guidance</Highlight> that turn curiosity into industry-ready expertise.
+          With our motto being <span className="whitespace-nowrap"><Highlight color="#4285f4" delay={0.2}>Giving Direction to Greatness</Highlight>,</span> we help students climb mountains on their own - as high as possible. We bring the <Highlight color="#ea4335" delay={0.55}>tools</Highlight>, the <Highlight color="#fbbc04" delay={0.75}>community</Highlight> and the <Highlight color="#34a853" delay={0.95}>guidance</Highlight> that turn curiosity into industry-ready expertise.
         </motion.p>
 
         <motion.div

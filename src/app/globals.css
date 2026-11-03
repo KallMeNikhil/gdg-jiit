@@ -119,15 +119,27 @@
   42% { transform: translateY(18%); height: calc(var(--dot) * 0.8); }
 }
 
-@supports (-moz-appearance: none) {
-  html {
-    scrollbar-color: #4285f4 #07080b;
-  }
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes logo-drift {
   0%, 100% { transform: translate3d(-50%, -50%, 0) rotate(-4deg) scale(1); }
   50% { transform: translate3d(-50%, -52%, 0) rotate(3deg) scale(1.04); }
+}
+
+@keyframes flag-wave {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-8deg) scaleX(0.9); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
 }
 
 @keyframes sheen {
@@ -335,6 +347,33 @@
 
     .g-edge:hover::after {
       opacity: 0.35;
+    }
+  }
+
+  .g-edge::after {
+    animation-play-state: paused;
+  }
+
+  .g-edge:focus-visible::after,
+  .g-edge[data-live="true"]::after,
+  .g-edge:active::after {
+    animation-play-state: running;
+  }
+
+  @media (hover: hover) {
+    .g-edge:hover::after {
+      animation-play-state: running;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .g-edge::before {
+      animation-play-state: paused;
+    }
+
+    .g-edge[data-live="true"]::before,
+    .g-edge:active::before {
+      animation-play-state: running;
     }
   }
 

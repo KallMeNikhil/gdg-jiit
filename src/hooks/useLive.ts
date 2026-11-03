@@ -1,11 +1,21 @@
 "use client";
 
-import { useInView } from "motion/react";
-import type { RefObject } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePointerFine } from "./useMediaQuery";
 
-export function useLive(ref: RefObject<Element | null>, margin: `${number}% ${number}${"px" | "%"} ${number}% ${number}${"px" | "%"}` = "-35% 0px -35% 0px") {
+export function useLive(hold = 1400) {
   const fine = usePointerFine();
-  const centred = useInView(ref, { margin });
-  return { fine, live: !fine && centred };
+  const [live, setLive] = useState(false);
+  const timer = useRef(0);
+
+  const tap = useCallback(() => {
+    if (fine) return;
+    window.clearTimeout(timer.current);
+    setLive(true);
+    timer.current = window.setTimeout(() => setLive(false), hold);
+  }, [fine, hold]);
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  return { fine, live: !fine && live, tap };
 }

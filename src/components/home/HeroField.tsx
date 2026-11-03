@@ -275,9 +275,8 @@ export function HeroField({ className = "" }: { className?: string }) {
     ro.observe(host);
 
     const coarse = !window.matchMedia("(pointer: fine)").matches;
-    const target = new THREE.Vector2(coarse ? 0.6 : 10, coarse ? 0.2 : 10);
+    const target = new THREE.Vector2(10, 10);
     let force = 0;
-    let touchedAt = -Infinity;
     const aim = (x: number, y: number) => {
       const r = host.getBoundingClientRect();
       target.set(((x - r.left) / r.width) * 2 - 1, -(((y - r.top) / r.height) * 2 - 1));
@@ -290,15 +289,21 @@ export function HeroField({ className = "" }: { className?: string }) {
     const onTouch = (e: TouchEvent) => {
       const t = e.touches[0];
       if (!t) return;
-      touchedAt = performance.now();
+      const fresh = force === 0;
       aim(t.clientX, t.clientY);
+      if (fresh) uniforms.uPointer.value.copy(target);
     };
     const onLeave = () => {
       force = 0;
     };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!e.touches.length) force = 0;
+    };
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("touchstart", onTouch, { passive: true });
     window.addEventListener("touchmove", onTouch, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
     document.documentElement.addEventListener("pointerleave", onLeave);
 
     let visible = true;
@@ -316,7 +321,7 @@ export function HeroField({ className = "" }: { className?: string }) {
       raf = requestAnimationFrame(tick);
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
-      if (!visible || document.hidden) return;
+      if (!visible || document.hidden || document.documentElement.dataset.intro === "play") return;
       frames += 1;
       if (frames < 120 && dt > 0.045) slow += 1;
       if (frames === 120 && slow > 70) {
@@ -326,11 +331,7 @@ export function HeroField({ className = "" }: { className?: string }) {
       }
       elapsed += dt;
       uniforms.uTime.value = elapsed;
-      if (coarse && now - touchedAt > 1600) {
-        target.set(Math.sin(elapsed * 0.31) * 0.75 + Math.sin(elapsed * 0.83) * 0.12, Math.sin(elapsed * 0.47 + 1.2) * 0.45);
-        force = 0.8;
-      }
-      uniforms.uPointer.value.lerp(target, coarse ? 0.05 : 0.08);
+      uniforms.uPointer.value.lerp(target, coarse ? 0.12 : 0.08);
       uniforms.uPointerForce.value += (force - uniforms.uPointerForce.value) * 0.05;
       const rect = host.getBoundingClientRect();
       uniforms.uScroll.value = Math.min(Math.max(-rect.top / Math.max(rect.height, 1), 0), 1);
@@ -357,6 +358,8 @@ export function HeroField({ className = "" }: { className?: string }) {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("touchstart", onTouch);
       window.removeEventListener("touchmove", onTouch);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
       document.documentElement.removeEventListener("pointerleave", onLeave);
       renderer.domElement.removeEventListener("webglcontextlost", onLost);
       geometry.dispose();

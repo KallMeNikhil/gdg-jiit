@@ -16,7 +16,7 @@ export function Domains({ index = "02" }: { index?: string }) {
           index={index}
           eyebrow="What we do"
           title={<>Six domains. <span className="g-text">One community.</span></>}
-          lead="Pick a lane or try them all. Every domain has its own leads, sessions and projects — and they all meet at the hackathon."
+          lead="Pick a lane or try them all. Every domain has its own leads, sessions and projects - and they all meet at the hackathon."
         />
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -34,6 +34,13 @@ export function Domains({ index = "02" }: { index?: string }) {
               >
                 <MagicCard className="group h-full rounded-[1.75rem]" gradientSize={260} gradientColor={`${hex}26`} gradientFrom={hex} gradientTo={COLOR_HEX[NEXT[d.color]]}>
                   <article className={`relative flex h-full flex-col p-6 sm:p-7 ${wide ? "min-h-[15rem] sm:min-h-[17rem] lg:flex-row lg:items-end lg:gap-10" : "min-h-[15rem] sm:min-h-[17rem]"}`}>
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute right-5 top-3 font-display text-[4.5rem] font-bold leading-none tracking-[-0.06em] text-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100 group-live:opacity-100 sm:right-7 sm:top-4"
+                      style={{ WebkitTextStroke: `1px ${hex}66` }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     <div className={wide ? "lg:flex-1" : ""}>
                       <span className="relative flex h-14 w-14 items-center justify-center rounded-2xl" style={{ color: hex, background: `${hex}1a` }}>
                         <span aria-hidden="true" className="absolute inset-0 rounded-2xl opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100 group-live:opacity-100" style={{ background: `${hex}55` }} />

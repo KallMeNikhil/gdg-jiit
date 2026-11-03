@@ -8,6 +8,7 @@ import { HeroMotto, HeroTitle } from "./HeroTitle";
 import { CtaButton } from "../ui/CtaButton";
 import { SITE, SOCIALS } from "@/src/data/site";
 import { useIntroDone } from "@/src/hooks/useIntroDone";
+import { usePointerFine } from "@/src/hooks/useMediaQuery";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const SOCIAL_ICONS = { Instagram, YouTube: Youtube, Discord: MessageCircle, X: Twitter, GitHub: Github, Facebook } as const;
@@ -15,6 +16,7 @@ const SOCIAL_ICONS = { Instagram, YouTube: Youtube, Discord: MessageCircle, X: T
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const play = useIntroDone();
+  const fine = usePointerFine();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 140]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
@@ -25,7 +27,7 @@ export function Hero() {
       <HeroField />
       <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(52%_48%_at_50%_50%,rgba(7,8,11,0.88),rgba(7,8,11,0.45)_65%,transparent_100%)]" />
 
-      <motion.div style={{ y, opacity, filter: blur }} className="shell relative z-10 flex flex-col items-center text-center">
+      <motion.div style={fine ? { y, opacity, filter: blur } : { y, opacity }} className="shell relative z-10 flex flex-col items-center text-center">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={play ? { opacity: 1, y: 0 } : undefined}

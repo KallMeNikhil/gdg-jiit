@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { motion, useMotionTemplate, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "motion/react";
 import { Github, Globe, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import type { Member } from "@/src/data/team";
-import { useLive } from "@/src/hooks/useLive";
+import { usePointerFine } from "@/src/hooks/useMediaQuery";
 import { cn } from "@/src/lib/utils";
 
 function links(m: Member) {
@@ -20,15 +20,12 @@ function links(m: Member) {
 
 export function MemberBadge({ member, color, serial }: { member: Member; color: string; serial: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { fine, live } = useLive(ref, "-30% 0px -30% 0px");
+  const fine = usePointerFine();
   const [open, setOpen] = useState(false);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
   const rx = useSpring(useTransform(py, [0, 1], [12, -12]), { stiffness: 170, damping: 16 });
   const ry = useSpring(useTransform(px, [0, 1], [-14, 14]), { stiffness: 170, damping: 16 });
-  const rxSoft = useTransform(rx, (v) => v * 0.45);
-  const rySoft = useTransform(ry, (v) => v * 0.45);
   const foilX = useTransform(px, [0, 1], [0, 100]);
   const foilY = useTransform(py, [0, 1], [0, 100]);
   const glareX = useTransform(px, [0, 1], [0, 100]);
@@ -37,18 +34,12 @@ export function MemberBadge({ member, color, serial }: { member: Member; color: 
   const glare = useMotionTemplate`radial-gradient(260px circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.35), transparent 60%)`;
   const show = open;
 
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
-    if (fine) return;
-    px.set(0.5 + Math.sin(p * Math.PI * 1.5) * 0.35);
-    py.set(0.15 + p * 0.7);
-  });
-
   return (
     <div className="[perspective:1000px]">
       <motion.div
         ref={ref}
-        data-live={live || (!fine && open)}
-        style={{ rotateX: fine ? rx : rxSoft, rotateY: fine ? ry : rySoft }}
+        data-live={!fine && open}
+        style={{ rotateX: fine ? rx : 0, rotateY: fine ? ry : 0 }}
         onPointerMove={(e) => {
           if (!fine) return;
           const r = ref.current?.getBoundingClientRect();
@@ -63,7 +54,15 @@ export function MemberBadge({ member, color, serial }: { member: Member; color: 
           py.set(0.5);
           setOpen(false);
         }}
-        onClick={() => !fine && setOpen((o) => !o)}
+        onClick={(e) => {
+          if (fine) return;
+          const r = ref.current?.getBoundingClientRect();
+          if (r) {
+            px.set((e.clientX - r.left) / r.width);
+            py.set((e.clientY - r.top) / r.height);
+          }
+          setOpen((o) => !o);
+        }}
         className="g-edge group relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-ink-soft [--edge-opacity:0.25] [transform-style:preserve-3d] min-[480px]:aspect-[3/4.2]"
       >
         <Image

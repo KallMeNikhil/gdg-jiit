@@ -12,13 +12,19 @@ import { CtaButton } from "../ui/CtaButton";
 const COLORS = ["#4285f4", "#ea4335", "#fbbc04", "#34a853"];
 const SOCIAL_ICONS = { Instagram, YouTube: Youtube, Discord: MessageCircle, X: Twitter, GitHub: Github, Facebook } as const;
 const ease = [0.16, 1, 0.3, 1] as const;
-const ORIGIN = "calc(100% - 2.5rem) 2.5rem";
+const BACKDROP = [
+  "radial-gradient(60vmax 60vmax at 0% 0%, rgba(66,133,244,0.28), transparent 60%)",
+  "radial-gradient(55vmax 55vmax at 100% 30%, rgba(234,67,53,0.2), transparent 60%)",
+  "radial-gradient(55vmax 55vmax at 0% 85%, rgba(251,188,4,0.16), transparent 60%)",
+  "radial-gradient(60vmax 60vmax at 100% 100%, rgba(52,168,83,0.22), transparent 60%)",
+  "#07080b",
+].join(", ");
 
 const DOTS = [
-  { closed: { x: -5, y: -5, width: 7, height: 7 }, open: { x: 0, y: -5.5, width: 4, height: 11 } },
-  { closed: { x: 5, y: -5, width: 7, height: 7 }, open: { x: 5.5, y: 0, width: 11, height: 4 } },
-  { closed: { x: 5, y: 5, width: 7, height: 7 }, open: { x: 0, y: 5.5, width: 4, height: 11 } },
-  { closed: { x: -5, y: 5, width: 7, height: 7 }, open: { x: -5.5, y: 0, width: 11, height: 4 } },
+  { closed: { x: -5, y: -5, scaleX: 1, scaleY: 1 }, open: { x: 0, y: -5, scaleX: 0.6, scaleY: 1.5 } },
+  { closed: { x: 5, y: -5, scaleX: 1, scaleY: 1 }, open: { x: 5, y: 0, scaleX: 1.5, scaleY: 0.6 } },
+  { closed: { x: 5, y: 5, scaleX: 1, scaleY: 1 }, open: { x: 0, y: 5, scaleX: 0.6, scaleY: 1.5 } },
+  { closed: { x: -5, y: 5, scaleX: 1, scaleY: 1 }, open: { x: -5, y: 0, scaleX: 1.5, scaleY: 0.6 } },
 ];
 
 export function MenuToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
@@ -38,15 +44,15 @@ export function MenuToggle({ open, onToggle }: { open: boolean; onToggle: () => 
         transition: "transform 0.2s",
       }}
     >
-      <motion.span className="relative block h-6 w-6" animate={{ rotate: open ? 45 : 0 }} transition={{ type: "spring", stiffness: 320, damping: 22 }}>
+      <motion.span className="relative block h-6 w-6" initial={false} animate={{ rotate: open ? 45 : 0 }} transition={{ type: "spring", stiffness: 320, damping: 28 }}>
         {DOTS.map((d, i) => (
           <motion.span
             key={i}
-            className="absolute left-1/2 top-1/2 rounded-full"
-            style={{ background: COLORS[i], translateX: "-50%", translateY: "-50%", boxShadow: `0 0 10px ${COLORS[i]}88` }}
+            className="absolute left-1/2 top-1/2 -ml-[3.5px] -mt-[3.5px] h-[7px] w-[7px] rounded-full"
+            style={{ background: COLORS[i] }}
             initial={false}
             animate={open ? d.open : d.closed}
-            transition={{ type: "spring", stiffness: 380, damping: 24, delay: open ? i * 0.03 : 0 }}
+            transition={{ type: "spring", stiffness: 420, damping: 30 }}
           />
         ))}
       </motion.span>
@@ -80,30 +86,16 @@ export function MobileMenu({ open, onClose, items, isActive }: { open: boolean; 
           aria-modal="true"
           aria-label="Site menu"
           className="fixed inset-0 z-[105] overflow-hidden md:hidden"
-          initial={{ clipPath: `circle(0% at ${ORIGIN})` }}
-          animate={{ clipPath: `circle(150% at ${ORIGIN})` }}
-          exit={{ clipPath: `circle(0% at ${ORIGIN})`, transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1], delay: 0.1 } }}
-          transition={{ duration: 0.75, ease: [0.76, 0, 0.24, 1] }}
+          style={{ background: BACKDROP }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.25, ease: "easeOut" } }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <div aria-hidden="true" className="absolute inset-0 bg-ink" />
-          <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
-            {COLORS.map((c, i) => (
-              <span
-                key={c}
-                className="absolute h-[70vmax] w-[70vmax] rounded-full opacity-70"
-                style={{
-                  background: `radial-gradient(circle, ${c}55, transparent 65%)`,
-                  top: ["-30%", "10%", "55%", "30%"][i],
-                  left: ["-40%", "45%", "-35%", "-10%"][i],
-                  animation: `aurora-${"abcd"[i]} ${26 + i * 5}s ease-in-out infinite alternate`,
-                }}
-              />
-            ))}
-            <div className="grid-lines absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_center,#000_15%,transparent_75%)]" />
-          </div>
+          <div aria-hidden="true" className="grid-lines absolute inset-0 opacity-40" />
 
           <div className="safe-b relative flex h-full flex-col px-6 pt-24">
-            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: 0.25, duration: 0.5, ease }} className="flex items-center gap-3">
+            <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.45, ease }} className="flex items-center gap-3">
               <span className="g-dots [--dot:6px]">
                 <i />
                 <i />
@@ -121,11 +113,9 @@ export function MobileMenu({ open, onClose, items, isActive }: { open: boolean; 
                   return (
                     <motion.li
                       key={item.href}
-                      initial={{ opacity: 0, y: 36, rotateX: -40 }}
-                      animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                      exit={{ opacity: 0, y: -16, transition: { duration: 0.2, delay: (items.length - i) * 0.02 } }}
-                      transition={{ delay: 0.28 + i * 0.06, duration: 0.7, ease }}
-                      style={{ transformPerspective: 700, transformOrigin: "50% 100%" }}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + i * 0.045, duration: 0.5, ease }}
                     >
                       <Link
                         href={item.href}
@@ -138,12 +128,12 @@ export function MobileMenu({ open, onClose, items, isActive }: { open: boolean; 
                         </span>
                         <span
                           className={cn("font-display text-[clamp(2.1rem,11vw,3.2rem)] font-semibold leading-[1.05] tracking-[-0.04em] transition-colors", active ? "" : "text-bone/75 group-active:text-bone")}
-                          style={active ? { color: c, textShadow: `0 0 32px ${c}66` } : undefined}
+                          style={active ? { color: c } : undefined}
                         >
                           {item.label}
                         </span>
                         {active ? (
-                          <motion.span layoutId="mobile-menu-dot" className="ml-auto h-2.5 w-2.5 rounded-full" style={{ background: c, boxShadow: `0 0 16px ${c}` }} />
+                          <span className="ml-auto h-2.5 w-2.5 rounded-full" style={{ background: c, boxShadow: `0 0 16px ${c}` }} />
                         ) : (
                           <ArrowUpRight size={20} className="ml-auto text-mist transition-transform group-active:-translate-y-0.5 group-active:translate-x-0.5" />
                         )}
@@ -154,7 +144,7 @@ export function MobileMenu({ open, onClose, items, isActive }: { open: boolean; 
               </ul>
             </nav>
 
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }} transition={{ delay: 0.6, duration: 0.6, ease }} className="space-y-6 pb-2">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5, ease }} className="space-y-6 pb-2">
               <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)" }} />
               <div className="flex items-center justify-between gap-4">
                 <CtaButton href="/join" onClick={onClose} variant="blue">Join us</CtaButton>

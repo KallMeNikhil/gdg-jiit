@@ -23,7 +23,7 @@ export default function ContactPage() {
       <PageHero
         kicker="We read everything"
         title={["Let's", <span key="t" className="g-text">talk.</span>]}
-        lead="Questions about joining, a collaboration idea or a sponsorship for our next hackathon — drop us a line."
+        lead="Questions about joining, a collaboration idea or a sponsorship for our next hackathon - drop us a line."
       />
       <section className="pb-16">
         <div className="shell grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-start">

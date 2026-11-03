@@ -20,7 +20,7 @@ export default function AboutPage() {
       <PageHero
         kicker="About the chapter"
         title={["Giving direction", <span key="g" className="g-text">to greatness.</span>]}
-        lead="We are a student-run chapter of Google Developer Groups on Campus at JIIT, Sector 128 — a place to learn by building, with people who want you to win."
+        lead="We are a student-run chapter of Google Developer Groups on Campus at JIIT, Sector 128 - a place to learn by building, with people who want you to win."
       />
 
       <section className="py-20 sm:py-28">
@@ -35,7 +35,7 @@ export default function AboutPage() {
 
       <section className="pt-10">
         <div className="shell">
-          <SectionHeading index="01" eyebrow="Our story" title={<>How we <span className="text-ash">got here.</span></>} lead="Scroll through the milestones that shaped the chapter — from DSC to GDG on Campus." />
+          <SectionHeading index="01" eyebrow="Our story" title={<>How we <span className="text-ash">got here.</span></>} lead="Scroll through the milestones that shaped the chapter - from DSC to GDG on Campus." />
         </div>
         <HistoryTrack />
       </section>
