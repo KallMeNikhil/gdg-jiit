@@ -21,9 +21,9 @@ type Form = {
 };
 
 const DEPARTMENTS: { id: Department; title: string; body: string; icon: typeof Code2; hex: string }[] = [
-  { id: "tech", title: "Tech", body: "Web, app, AI/ML, cloud and CP — build the things.", icon: Code2, hex: "#4285f4" },
-  { id: "ui/ux", title: "UI / UX", body: "Interfaces, visuals and brand — make it feel right.", icon: Palette, hex: "#ea4335" },
-  { id: "management", title: "Management", body: "Events, outreach and PR — make it happen.", icon: Megaphone, hex: "#34a853" },
+  { id: "tech", title: "Tech", body: "Web, app, AI/ML, cloud and CP - build the things.", icon: Code2, hex: "#4285f4" },
+  { id: "ui/ux", title: "UI / UX", body: "Interfaces, visuals and brand - make it feel right.", icon: Palette, hex: "#ea4335" },
+  { id: "management", title: "Management", body: "Events, outreach and PR - make it happen.", icon: Megaphone, hex: "#34a853" },
 ];
 
 const STEPS = ["You", "Contact", "Domain", "Review"];
@@ -108,7 +108,7 @@ export function JoinWizard() {
           <PartyPopper size={28} />
         </motion.span>
         <h2 className="mt-7 text-4xl font-semibold">You are in, {form.name.split(" ")[0]}.</h2>
-        <p className="mx-auto mt-4 max-w-md text-ash">Your application is with the team. While you wait, come say hi in Discord — that is where everything happens first.</p>
+        <p className="mx-auto mt-4 max-w-md text-ash">Your application is with the team. While you wait, come say hi in Discord - that is where everything happens first.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <CtaButton href={LINKS.discord} variant="blue">Join our Discord</CtaButton>
           <CtaButton href="/events" variant="ghost">Browse events</CtaButton>

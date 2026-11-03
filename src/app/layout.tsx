@@ -13,11 +13,11 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", 
 
 export const metadata: Metadata = {
   title: {
-    default: "GDG JIIT 128 — Giving Direction to Greatness",
+    default: "GDG JIIT 128 - Giving Direction to Greatness",
     template: "%s · GDG JIIT 128",
   },
   description:
-    "Google Developer Groups on Campus at JIIT 128 — a student-led community of builders learning, shipping and growing together with Google technologies.",
+    "Google Developer Groups on Campus at JIIT 128 - a student-led community of builders learning, shipping and growing together with Google technologies.",
   openGraph: {
     title: "GDG JIIT 128",
     description: "A student-led community of builders at JIIT 128.",

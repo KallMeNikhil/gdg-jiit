@@ -102,7 +102,7 @@ const teamData = [
     "role": "Management & PR Lead",
     "category": "Team Leads",
     "image": armanImg,
-    "quote": "Code, Create, Conquer \u2013 because every great innovation starts with a single line.",
+    "quote": "Code, Create, Conquer - because every great innovation starts with a single line.",
     "socials": {
       "github": "https://github.com/armangupta18",
       "linkedin": "https://www.linkedin.com/in/arman-gupta-a3ba94281/",

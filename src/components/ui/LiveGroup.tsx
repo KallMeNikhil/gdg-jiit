@@ -1,10 +1,19 @@
 "use client";
 
-import { useRef, type HTMLAttributes } from "react";
+import type { HTMLAttributes, MouseEvent } from "react";
 import { useLive } from "@/src/hooks/useLive";
 
-export function LiveGroup({ className = "", ...rest }: HTMLAttributes<HTMLDivElement>) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { live } = useLive(ref);
-  return <div ref={ref} data-live={live} className={`group ${className}`} {...rest} />;
+export function LiveGroup({ className = "", onClick, ...rest }: HTMLAttributes<HTMLDivElement>) {
+  const { live, tap } = useLive();
+  return (
+    <div
+      data-live={live}
+      onClick={(e: MouseEvent<HTMLDivElement>) => {
+        tap();
+        onClick?.(e);
+      }}
+      className={`group ${className}`}
+      {...rest}
+    />
+  );
 }

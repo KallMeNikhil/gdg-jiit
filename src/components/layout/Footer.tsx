@@ -58,7 +58,7 @@ export function Footer() {
               <span className="text-balance font-display text-[1.35rem] font-semibold leading-tight tracking-tight sm:text-2xl">{SITE.longName}</span>
             </div>
             <p className="max-w-2xl text-sm leading-relaxed text-ash">
-              Google Developer Groups on Campus at Jaypee Institute of Information Technology, Sector 128, Noida — a community of student developers learning and building with Google technologies.
+              Google Developer Groups on Campus at Jaypee Institute of Information Technology, Sector 128, Noida - a community of student developers learning and building with Google technologies.
             </p>
           </div>
 

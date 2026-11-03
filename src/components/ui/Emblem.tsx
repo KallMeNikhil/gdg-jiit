@@ -1,34 +1,40 @@
-import type { LucideIcon } from "lucide-react";
+const BARS = ["#4285f4", "#ea4335", "#fbbc04", "#34a853"];
 
-const RING = ["#4285f4", "#ea4335", "#fbbc04", "#34a853"];
-
-export function Emblem({ icon: Icon, color, seed = 0, className = "" }: { icon: LucideIcon; color: string; seed?: number; className?: string }) {
-  const tilt = (seed * 37) % 360;
+export function Emblem({ word, color, seed = 0, className = "" }: { word: string; color: string; seed?: number; className?: string }) {
+  const lift = 4 + ((seed * 7) % 8);
   return (
-    <div aria-hidden="true" className={`relative overflow-hidden ${className}`} style={{ background: `radial-gradient(120% 90% at 50% 110%, ${color}38, transparent 60%), linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0))` }}>
-      <div className="grid-lines absolute inset-0 opacity-60 [mask-image:radial-gradient(circle_at_50%_55%,#000_10%,transparent_70%)]" />
-      <div className="absolute left-1/2 top-1/2 h-0 w-0">
-        {[150, 220, 290].map((size, i) => (
+    <div
+      aria-hidden="true"
+      className={`relative overflow-hidden ${className}`}
+      style={{ background: `radial-gradient(110% 80% at 85% 110%, ${color}40, transparent 62%), linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0))` }}
+    >
+      <div
+        className="absolute inset-0 opacity-70 [mask-image:linear-gradient(200deg,#000_10%,transparent_75%)]"
+        style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1.2px)", backgroundSize: "14px 14px" }}
+      />
+      <div className="absolute bottom-5 right-5 flex items-end gap-1">
+        {BARS.map((c, i) => (
           <span
-            key={size}
-            className="absolute rounded-full border border-dashed transition-transform duration-[1.6s] ease-out group-hover:rotate-[60deg] group-live:rotate-[60deg]"
-            style={{
-              width: size,
-              height: size,
-              left: -size / 2,
-              top: -size / 2,
-              borderColor: `${RING[(i + seed) % 4]}55`,
-              transform: `rotate(${tilt + i * 40}deg)`,
-              animation: `spin ${26 + i * 10}s linear infinite ${i % 2 ? "reverse" : ""}`,
-            }}
-          >
-            <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full" style={{ background: RING[(i + seed) % 4], boxShadow: `0 0 12px ${RING[(i + seed) % 4]}` }} />
-          </span>
+            key={c}
+            className="w-1.5 rounded-full transition-[height] duration-500 ease-out"
+            style={{ background: c, height: `${[10, 16, 7, 13][(i + seed) % 4]}px` }}
+          />
         ))}
       </div>
-      <div className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[1.6rem] border border-white/15 bg-[#151821]/90 transition-transform duration-700 group-hover:scale-110 group-live:scale-110">
-        <span className="absolute inset-0 rounded-[1.6rem] opacity-40 blur-xl" style={{ background: color }} />
-        <Icon size={34} strokeWidth={1.6} className="relative" style={{ color }} />
+      <div className="absolute inset-x-0 h-px opacity-60" style={{ top: `${46 + (seed % 3) * 6}%`, background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
+      <div className="absolute -left-[0.04em] font-display text-[clamp(5.2rem,9vw,7.5rem)] font-bold leading-[0.8] tracking-[-0.07em] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-3 group-active:translate-x-3" style={{ bottom: `-${lift / 100}em` }}>
+        <span
+          className="block text-transparent"
+          style={{ backgroundImage: `linear-gradient(180deg, ${color}cc 0%, ${color}38 55%, ${color}08 100%)`, WebkitBackgroundClip: "text", backgroundClip: "text" }}
+        >
+          {word}
+        </span>
+        <span
+          className="absolute inset-0 block text-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-active:opacity-100"
+          style={{ backgroundImage: `linear-gradient(100deg, ${color}, #f3f4f6 70%)`, WebkitBackgroundClip: "text", backgroundClip: "text" }}
+        >
+          {word}
+        </span>
       </div>
     </div>
   );

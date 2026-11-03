@@ -37,7 +37,7 @@ export const EVENTS: ClubEvent[] = [
     slug: "bitbox-6",
     title: "BitBox 6.0",
     summary:
-      "Our flagship hackathon returned bigger than ever — PPT rounds, speaker sessions, mini games and a grand finale judged by engineers from the industry.",
+      "Our flagship hackathon returned bigger than ever - PPT rounds, speaker sessions, mini games and a grand finale judged by engineers from the industry.",
     season: "2025-2026",
     type: "hackathon",
     image: "/bitbox-screen.png",
@@ -103,7 +103,7 @@ export const EVENTS: ClubEvent[] = [
   {
     slug: "intro-to-hackathon",
     title: "Intro to Hackathon",
-    summary: "Come, explore and code — the kick-off for BitBox 3.0, the annual hackathon of GDG JIIT 128.",
+    summary: "Come, explore and code - the kick-off for BitBox 3.0, the annual hackathon of GDG JIIT 128.",
     season: "2022-2023",
     type: "hackathon",
     image: "/hackathon.webp",

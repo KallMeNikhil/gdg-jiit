@@ -23,10 +23,12 @@ export function SectionHeading({ index, eyebrow, title, lead, className }: Props
         whileInView={{ opacity: 1, letterSpacing: "0.32em" }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="font-mono text-[0.74rem] font-medium uppercase"
+        className="flex items-center gap-3 font-mono text-[0.74rem] font-medium uppercase"
         style={{ color }}
       >
-        {eyebrow}
+        <span className="text-mist">{index}</span>
+        <span aria-hidden="true" className="h-px w-6 bg-current opacity-60" />
+        <span>{eyebrow}</span>
       </motion.span>
       <motion.h2
         initial={{ opacity: 0, y: 40, rotateX: -35, filter: "blur(10px)" }}

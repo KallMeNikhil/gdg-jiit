@@ -14,7 +14,7 @@ function Face({ m }: { m: Member }) {
       href="/team"
       className="group relative block h-48 w-36 shrink-0 active:scale-[0.97] sm:h-56 sm:w-44 overflow-hidden rounded-[1.5rem] border border-white/10 bg-ink-soft transition-[transform,border-color] duration-500 hover:-translate-y-2 hover:border-white/30"
     >
-      <Image src={m.image} alt={m.name} fill sizes="176px" placeholder="blur" className="object-cover transition-[filter,transform] duration-700 group-hover:scale-105 group-hover:grayscale-0 [@media(pointer:fine)]:grayscale" />
+      <Image src={m.image} alt={m.name} fill sizes="176px" placeholder="blur" className="object-cover grayscale transition-[filter,transform] duration-700 group-hover:scale-105 group-hover:grayscale-0 group-active:grayscale-0" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-4">
         <p className="truncate font-display text-base font-semibold">{m.name}</p>
@@ -37,20 +37,10 @@ export function TeamTeaser() {
           index="06"
           eyebrow="The people"
           title={<>Built by <span className="g-text">{ALL_MEMBERS.length} humans</span> who care.</>}
-          lead="Mentors, team leads and the core team — the people who plan every session, mentor every batch and make every event happen."
+          lead="Mentors, team leads and the core team - the people who plan every session, mentor every batch and make every event happen."
         />
       </div>
       <div className="relative mt-12 flex flex-col gap-3 mask-fade-x sm:mt-14 sm:gap-4">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 [@media(pointer:fine)]:hidden"
-          style={{
-            backdropFilter: "grayscale(1) brightness(0.8)",
-            WebkitBackdropFilter: "grayscale(1) brightness(0.8)",
-            maskImage: "linear-gradient(90deg, #000 18%, transparent 38%, transparent 62%, #000 82%)",
-            WebkitMaskImage: "linear-gradient(90deg, #000 18%, transparent 38%, transparent 62%, #000 82%)",
-          }}
-        />
         {[rowA, rowB].map((row, r) => (
           <div key={r} className="group flex overflow-hidden">
             <div className={`flex shrink-0 gap-3 pr-3 group-hover:[animation-play-state:paused] group-active:[animation-play-state:paused] sm:gap-4 sm:pr-4 ${r === 0 ? "animate-marquee" : "animate-marquee-reverse"}`} style={{ animationDuration: "70s" }}>

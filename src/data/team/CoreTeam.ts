@@ -131,7 +131,7 @@ const coreData = [
     "role": "Core Team",
     "category": "Core Team",
     "image": anushkaImg,
-    "quote": "Believe in your flyness, conquer your shyness. \u2014 Kanye West",
+    "quote": "Believe in your flyness, conquer your shyness. - Kanye West",
     "socials": {
       "github": "https://github.com/Anushka-XD",
       "linkedin": "https://www.linkedin.com/in/anushka-aggarwal-80b31836a/",

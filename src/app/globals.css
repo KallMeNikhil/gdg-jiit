@@ -338,6 +338,33 @@
     }
   }
 
+  .g-edge::after {
+    animation-play-state: paused;
+  }
+
+  .g-edge:focus-visible::after,
+  .g-edge[data-live="true"]::after,
+  .g-edge:active::after {
+    animation-play-state: running;
+  }
+
+  @media (hover: hover) {
+    .g-edge:hover::after {
+      animation-play-state: running;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .g-edge::before {
+      animation-play-state: paused;
+    }
+
+    .g-edge[data-live="true"]::before,
+    .g-edge:active::before {
+      animation-play-state: running;
+    }
+  }
+
   .g-edge.edge-2::before {
     padding: 1.5px;
   }

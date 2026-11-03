@@ -1,6 +1,6 @@
 # GDG JIIT 128
 
-The website of Google Developer Groups on Campus at JIIT, Sector 128 — events, team, programs, membership and our flagship hackathon, BitBox.
+The website of Google Developer Groups on Campus at JIIT, Sector 128 - events, team, programs, membership and our flagship hackathon, BitBox.
 
 ## Stack
 
@@ -23,11 +23,11 @@ Open http://localhost:3000. The API routes need `MONGODB_URI` and `RESEND_API_KE
 
 | Route | What it is |
 | --- | --- |
-| `/` | Home — hero, mission, domains, programs, journey, events, team, FAQ |
+| `/` | Home - hero, mission, domains, programs, journey, events, team, FAQ |
 | `/about` | Story timeline, values and domains |
 | `/events` | Every event, filterable by season and type, with a detail view |
 | `/team` | Mentors, team leads and core team spotlights |
-| `/bitbox` | BitBox 6.0 archive — timeline, prizes, speakers, judges, sponsors |
+| `/bitbox` | BitBox 6.0 archive - timeline, prizes, speakers, judges, sponsors |
 | `/join` | Membership registration (`POST /api/registrationForm`) |
 | `/contact` | Contact form (`POST /api/contactUs`) |
 
@@ -37,10 +37,10 @@ Old URLs such as `/events/2022-2023`, `/contact-us`, `/gdg-registration-form` an
 
 All copy lives in `src/data`:
 
-- `site.ts` — links, navigation, domains, programs, journey, FAQ, history and values
-- `events.ts` — every event; add a `date` to an upcoming event to show the live countdown
-- `team/` — team rosters and photos
-- `bitbox/` — BitBox timeline, prizes and mini games
+- `site.ts` - links, navigation, domains, programs, journey, FAQ, history and values
+- `events.ts` - every event; add a `date` to an upcoming event to show the live countdown
+- `team/` - team rosters and photos
+- `bitbox/` - BitBox timeline, prizes and mini games
 
 ## Structure
 
